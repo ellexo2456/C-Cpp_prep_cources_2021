@@ -1,5 +1,6 @@
+#include <stdio.h>
+#include <stdlib.h>
 #include "utils.h"
-#include "stdio.h   "
 
 #define ERR_ARGS_COUNT (-1)
 #define ERR_WRONG_FLG (-2)
@@ -50,6 +51,7 @@ int main(int argc, const char** argv) {
             } else {
                 return ERR_ARGS_COUNT;
             }
+            break;
         }
         case TST_MOD_IMPL: {
             // int num = atoi(data);
