@@ -24,7 +24,7 @@ int main(int argc, const char** argv) {
         case TST_FOO_FIX: {
             int to = atoi(data);
             size_t ticks_count = timer_from(to);
-            printf("%zu\n", ticks_count);
+            printf("%zu", ticks_count);
             break;
         }
         case TST_FOO_IMPL: {
@@ -40,7 +40,7 @@ int main(int argc, const char** argv) {
         }
         case TST_MOD_IMPL: {
             int num = atoi(data);
-            printf("%i/n", is_prime(num));
+            printf("%i", is_prime(num));
             break;
         }
         default: {
