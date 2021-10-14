@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "utils.h"
+#include "custom_pow.h"
 
 #define ERR_ARGS_COUNT (-1)
 #define ERR_WRONG_FLG (-2)
@@ -8,22 +9,6 @@
 #define TST_FOO_FIX     1
 #define TST_FOO_IMPL    2
 #define TST_MOD_IMPL    3
-
-
-/* NOTE(stitaevskiy):
- * We use `atoi` function just for simplification and code reducing.
- * This function doesn't report conversation errors.
- * For safety program we recommend using `strtol` and its analogs.
- * (See `man atoi` and `man strtol` for more info).
- *
- * const char str_num[] = "1234";
- * char* end = NULL;
- * int val = (int) strtol(str_num, &end, 0);
- * if (end != '\0') {
- *     //ERROR
- * }
- *
- * */
 
 int main(int argc, const char** argv) {
     if (argc < 3) {
@@ -43,11 +28,10 @@ int main(int argc, const char** argv) {
         }
         case TST_FOO_IMPL: {
             if (argc == 4) {
-                // int base = atoi(data);
-                // int pow =  atoi(argv[3]);
-                // int res = custom_pow(base, pow);    // TODO: Implement me
-
-                // printf("%i\n", res);
+                int base = atoi(data);
+                int pow = atoi(argv[3]);
+                int res = custom_pow(base, pow);
+                printf("%i\n", res);
             } else {
                 return ERR_ARGS_COUNT;
             }
