@@ -6,7 +6,8 @@ SRCS = \
        project/src/main.c \
        project/src/utils.c \
 	   project/src/custom_pow.c \
-	   project/src/is_prime.c
+	   project/src/is_prime.c \
+	   project/src/recursion.c
 
 .PHONY: all build rebuild check test clean
 
