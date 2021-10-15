@@ -2,11 +2,11 @@ TARGET = ./main.out
 HDRS_DIR = project/include
 
 SRCS = \
-    project/src/main.c \
+    roject/src/main.c \
     project/src/utils.c \
-	project/src/custom_pow.c \
-	project/src/is_prime.c \
-	project/src/print_seq.c
+    project/src/custom_pow.c \
+    project/src/is_prime.c \
+    project/src/print_seq.c
 
 .PHONY: all build rebuild check test clean
 
