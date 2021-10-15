@@ -3,7 +3,7 @@
 #include "utils.h"
 #include "custom_pow.h"
 #include "is_prime.h"
-#include "recursion.h"
+#include "print_seq.h"
 
 #define ERR_ARGS_COUNT (-1)
 #define ERR_WRONG_FLG (-2)
@@ -18,11 +18,11 @@ int main(int argc, const char** argv) {
         return ERR_ARGS_COUNT;
     }
 
-    int Test_case = atoi(argv[1]);  // Первый аргумент: определяет, какой кейс будет выполняться
+    int test_case = atoi(argv[1]);  // Первый аргумент: определяет, какой кейс будет выполняться
     const char* data;
     data = argv[2];
 
-    switch (Test_case) {
+    switch (test_case) {
         case TST_FOO_FIX: {                          // 1й кейс - "таймер"
             int to = atoi(data);
             size_t ticks_count = timer_from(to);
@@ -45,9 +45,9 @@ int main(int argc, const char** argv) {
             printf("%i", is_prime(num));
             break;
         }
-        case TST_REC_IMPL: {                          // 4й кейс рекурсивная функция
-            int n = atoi(data);
-            recursion(n);
+        case TST_REC_IMPL: {                          // 4й кейс рекурсивный вывод последовательности
+            int const end_of_seq = atoi(data);        // целых чисел до end_of_seq включительно
+            print_seq(end_of_seq);
             break;
         }
         default: {

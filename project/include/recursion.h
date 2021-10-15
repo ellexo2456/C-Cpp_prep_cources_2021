@@ -1,6 +1,0 @@
-#ifndef PROJECT_INCLUDE_RECURSION_H_
-#define PROJECT_INCLUDE_RECURSION_H_
-
-void recursion(int n);
-
-#endif  // PROJECT_INCLUDE_RECURSION_H_
