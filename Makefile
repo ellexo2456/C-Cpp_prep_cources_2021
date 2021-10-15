@@ -2,7 +2,7 @@ TARGET = ./main.out
 HDRS_DIR = project/include
 
 SRCS = \
-    roject/src/main.c \
+    project/src/main.c \
     project/src/utils.c \
     project/src/custom_pow.c \
     project/src/is_prime.c \
