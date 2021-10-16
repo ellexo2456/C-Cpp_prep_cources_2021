@@ -2,8 +2,6 @@
 #include "transaction_write.h"
 #include "struct_data.h"
 
-include_struct_data;
-
 void transaction_write (FILE *of_ptr, data transfer) {
 	printf ("%s\n%s\n",  
 		"1 Number account: ",

@@ -5,8 +5,6 @@
 #include "update_black_record.h"
 #include "struct_data.h"
 
-include_struct_data;
-
 int main(void) {
 	int choice = 0;	
 	FILE *ptr, *ptr_2 , *blackrecord;
