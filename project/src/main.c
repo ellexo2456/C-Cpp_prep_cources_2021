@@ -6,7 +6,7 @@
 #include "data_write_read_test.h"
 
 int main(void) {
-	printf("Start the data write/read test\n");
+	printf("Start the data write/read test\n");   // Проверка записи данных на диск и их считывания
 	data_write_read_test();
 	int choice = 0;	
 	FILE *ptr, *ptr_2 , *blackrecord;
@@ -14,8 +14,8 @@ int main(void) {
 	printf ("%s", "please enter action\n1 enter data client:\n2 enter data transaction:\n3 update base\n");
 	while (scanf("%d", &choice) != -1) {
 		switch (choice) {
-		case 1:
-			ptr = fopen ("record.dat", "r+");
+		case 1:                                          // Ввод данных пользователя
+			ptr = fopen ("record.dat", "r+");      
 			if (ptr == NULL) {
 				puts ("Not acess");	
 			} else {
@@ -23,7 +23,7 @@ int main(void) {
 				fclose (ptr);
 			}
 			break;
-		case 2:
+		case 2:											// Ввод данных о платежах
 			ptr = fopen ("transaction.dat", "r+");
 			if (ptr == NULL) {
 				puts ("Not acess");	
@@ -32,7 +32,7 @@ int main(void) {
 				fclose (ptr);
 			}
 			break;	
-		case 3:
+		case 3:											// Обновление данных о кредите
 			ptr = fopen ("record.dat", "r");
 			ptr_2 = fopen ("transaction.dat", "r");
 			blackrecord = fopen ("blackrecord.dat", "w");	
@@ -40,15 +40,15 @@ int main(void) {
 				puts("exit");
 			} else {
 				update_black_record (ptr, ptr_2, blackrecord, client_data, transfer);
-				ptr = fopen ("record.dat", "w");
-				fclose (ptr);
+				ptr = fopen ("record.dat", "w");  // Очистка файла. Функция free вызывает ошибку,
+				fclose (ptr);					  // поэтому она заменена данным образом. 
 				fclose (ptr_2);	
 				fclose (blackrecord);
 			}
 				break;
-			default:
-				puts ("error");
-				break ;
+		default:
+			puts ("error");
+			break ;
 		}
  	printf ("%s", "please enter action\n1 enter data client:\n2 enter data transaction:\n3 update base\n");
 	}
