@@ -6,7 +6,7 @@
 #include "data_write_read_test.h"
 
 int main(void) {
-	printf("Start the data write/read test");
+	printf("Start the data write/read test\n");
 	data_write_read_test();
 	int choice = 0;	
 	FILE *ptr, *ptr_2 , *blackrecord;

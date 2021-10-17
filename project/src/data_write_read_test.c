@@ -1,24 +1,24 @@
-#include "stdio.h"
+#include <string.h> 
+#include <stdio.h>
 #include "write_to_file.h"
 #include "read_from_file.h"
 #include "struct_test_data.h"
 
 void data_write_read_test(void) {
-    printf("0");
     char const *filename = "test_file";
 
-    some expected_data = {231, 245, 1965};
+    some expected_data = {231, 245.0, "now"};
 
     write_to_file(filename, expected_data);
 
-    some got_data = {0, 0, 0};
+    some got_data = {0, 0.0, "00"};
+    some *ptr_got_data = &got_data;
 
-    got_data =read_from_file(filename, got_data);
-    printf("\n%i %i %i\n", expected_data.artist, expected_data.song, expected_data.year);
-    printf("%i %i %i\n", got_data.artist, got_data.song, got_data.year);
-    if ((got_data.artist == expected_data.artist) && (got_data.song == expected_data.song) && (got_data.year == expected_data.year))
-        printf ("Successful");
+    read_from_file(filename, ptr_got_data);
+
+    if ((got_data.num_int == expected_data.num_int) && (got_data.num_float == expected_data.num_float) && (strcmp(got_data.str, expected_data.str) == 0))
+        printf ("Successful\n");
     else 
-        printf("Something`s wrong");
+        printf("Something`s wrong\n");
 }
 
