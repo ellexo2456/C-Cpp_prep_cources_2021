@@ -1,5 +1,4 @@
 #include <stdio.h>
-#include <stdlib.h>
 #include "master_write.h"
 #include "transaction_write.h"
 #include "update_black_record.h"
@@ -8,7 +7,7 @@
 int main(void) {
 	int choice = 0;	
 	FILE *ptr, *ptr_2 , *blackrecord;
-	data client_data,  transfer;
+	data client_data, transfer;
 	printf ("%s", "please enter action\n1 enter data client:\n2 enter data transaction:\n3 update base\n");
 	while (scanf("%d", &choice) != -1) {
 		switch (choice) {
@@ -38,7 +37,7 @@ int main(void) {
 				puts("exit");
 			} else {
 				update_black_record (ptr, ptr_2, blackrecord, client_data, transfer);
-				free (ptr);
+				ptr = fopen ("record.dat", "w");
 				fclose (ptr);
 				fclose (ptr_2);	
 				fclose (blackrecord);
