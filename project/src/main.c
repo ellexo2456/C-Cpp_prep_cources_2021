@@ -3,8 +3,11 @@
 #include "transaction_write.h"
 #include "update_black_record.h"
 #include "struct_data.h"
+#include "data_write_read_test.h"
 
 int main(void) {
+	printf("Start the data write/read test");
+	data_write_read_test();
 	int choice = 0;	
 	FILE *ptr, *ptr_2 , *blackrecord;
 	data client_data, transfer;

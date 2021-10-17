@@ -1,0 +1,6 @@
+#ifndef PROJECT_INCLUDE_IS_DATA_WRITE_READ_TEST_H_
+#define PROJECT_INCLUDE_IS_DATA_WRITE_READ_TEST_H_
+
+void data_write_read_test (void);
+
+#endif  // PROJECT_INCLUDE_IS_DATA_WRITE_READ_TEST_H_

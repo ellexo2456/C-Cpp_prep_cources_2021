@@ -1,0 +1,25 @@
+TARGET = test
+
+SRCS = \
+	project/src/main.c\
+	project/src/data_write_read_test.c \
+	project/src/read_from_file.c \
+	project/src/master_write.c \
+	project/src/update_black_record.c \
+	project/src/transaction_write.c \
+	project/src/write_to_file.c	
+
+OBJS = $(SRCS:.c=.o)
+
+.PHONY: all clean
+
+all: $(TARGET)
+
+$(TARGET): $(OBJS)
+	$(CC) -o $(TARGET) $(OBJS)
+
+.c.o:
+	$(CC) -c $< -o $@
+
+clean:
+	rm -rf $(TARGET) $(OBJS)
