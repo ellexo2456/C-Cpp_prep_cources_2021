@@ -8,7 +8,6 @@ int custom_pow(int base, int pow) {
             base *= start_number;
         }
         return base;
-    } else {
-        return 1;
     }
+    return 1;
 }
