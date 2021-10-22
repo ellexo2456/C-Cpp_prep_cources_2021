@@ -6,8 +6,10 @@
 
 int main(void) {
 	int choice = 0;
-	FILE *ptr, *ptr_2 , *blackrecord;
-	data client_data = {0};
+	FILE *ptr;
+	FILE *ptr_2;
+	FILE *blackrecord;
+	data client_data = {0, "Client name", "Client surname", "Client adress", "Client t number", 0, 0, 0};
 	data transfer = {0};
 	printf("please enter action\n1 enter data client:\n2 enter data transaction:\n3 update base\n");
 	while (scanf("%d", &choice) != -1) {
