@@ -15,7 +15,7 @@ int main(void) {
 	while (scanf("%d", &choice) != -1) {
 		switch (choice) {
 		case 1:                                          // Ввод данных пользователя
-			ptr = fopen("record.dat", "w+");
+			ptr = fopen("record.dat", "r+");
 			if (ptr == NULL) {
 				puts("Not acess");
 			} else {
@@ -24,7 +24,7 @@ int main(void) {
 			}
 			break;
 		case 2:											// Ввод данных о платежах
-			ptr = fopen("transaction.dat", "w+");
+			ptr = fopen("transaction.dat", "r+");
 			if (ptr == NULL) {
 				puts("Not acess");
 			} else {
