@@ -6,7 +6,7 @@ typedef struct {
 	char name[20];
 	char surname[20];
 	char addres[30];
-	char telephone_number[15];
+	char telephone_number[16];
 	double indebtedness;
 	double credit_limit;
 	double cash_payments;
