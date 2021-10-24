@@ -1,55 +1,71 @@
 #include <stdio.h>
-#include "master_write.h"
-#include "transaction_write.h"
-#include "update_black_record.h"
+#include "add_client_data.h"
+#include "add_transaction_data.h"
+#include "update_credit_limit.h"
 #include "struct_data.h"
+#define ADD_CLIENT_DATA case 1
+#define ADD_TRANSACTION_DATA case 2
+#define UPDATE_CREDIT_LIMIT case 3
+
+// Тестирущий модуль сделан через (1): .sh файл и (2)...
+// (1) запускать командой make -f TestMakefile из терминала
 
 int main(void) {
 	int choice = 0;
-	FILE *ptr;
-	FILE *ptr_2;
-	FILE *blackrecord;
-	data client_data = {0, "Client name", "Client surname", "Client adress", "Client t number", 0, 0, 0};
-	data transfer = {0};
-	printf("please enter action\n1 enter data client:\n2 enter data transaction:\n3 update base\n");
-	while (scanf("%d", &choice) != -1) {
+	FILE *pointer_to_file_record;
+	FILE *pointer_to_file_transaction;
+	FILE *pointer_to_file_blackrecord;
+	data client_data = { .number = 0,
+		.name = "Client name",
+		.surname = "Client surname",
+		.adress = "Client adress",
+		.telephone_number = "Client t number",
+		.indebtedness = 0,
+		.credit_limit = 0,
+		.cash_payments = 0
+	};
+	data transfer = {.number = 0,
+		.cash_payments= 0
+	};
+	printf("please enter action\n1 enter client data:\n2 enter transaction data:\n3 update credit limit\n");
+	while (scanf("%d", &choice) != EOF) {
 		switch (choice) {
-		case 1:                                          // Ввод данных пользователя
-			ptr = fopen("record.dat", "r+");
-			if (ptr == NULL) {
-				puts("Not acess");
+		ADD_CLIENT_DATA:
+			pointer_to_file_record = fopen("record.dat", "r+");
+			if (pointer_to_file_record == NULL) {
+				puts("Acess denied");
 			} else {
-				master_write(ptr, client_data);
-				fclose(ptr);
+				add_client_data(pointer_to_file_record, client_data);
 			}
+			fclose(record.dat)
 			break;
-		case 2:											// Ввод данных о платежах
-			ptr = fopen("transaction.dat", "r+");
-			if (ptr == NULL) {
-				puts("Not acess");
+		ADD_TRANSACTION_DATA:
+			pointer_to_file_transaction = fopen("transaction.dat", "r+");
+			if (pointer_to_file_transaction == NULL) {
+				puts("Acess denied");
 			} else {
-				transaction_write(ptr, transfer);
-				fclose(ptr);
+				add_transaction_data(pointer_to_file_transaction, transfer);
 			}
+			fclose(pointer_to_file_transaction);
 			break;
-		case 3:											// Обновление данных о кредите
-			ptr = fopen("record.dat", "r");
-			ptr_2 = fopen("transaction.dat", "r");
-			blackrecord = fopen("blackrecord.dat", "w");
-		    if (ptr == NULL || ptr_2 == NULL || blackrecord == NULL) {
-				puts("exit");
+		UPDATE_CREDIT_LIMIT:
+			pointer_to_file_record = fopen("record.dat", "r");
+			pointer_to_file_transaction = fopen("transaction.dat", "r");
+			pointer_to_file_blackrecord = fopen("blackrecord.dat", "w");
+		    if (pointer_to_file_record == NULL || pointer_to_file_transaction == NULL || pointer_to_file_blackrecord == NULL) {
+				puts("Acess denied");
 			} else {
-				update_black_record(ptr, ptr_2, blackrecord, client_data, transfer);
-				fclose(ptr);
-				fclose(ptr_2);
-				fclose(blackrecord);
+				update_credit_limit(pointer_to_file_record, pointer_to_file_transaction, pointer_to_file_blackrecord, client_data, transfer);
 			}
-				break;
-		default:
-			puts("error");
+			fclose(pointer_to_file_record);
+			fclose(pointer_to_file_transaction);
+			fclose(pointer_to_file_blackrecord);
+			break;
+		default:	
+			puts("Wrong action number");
 			break;
 		}
-		printf("please enter action\n1 enter data client:\n2 enter data transaction:\n3 update base\n");
+		printf("please enter action\n1 enter client data:\n2 enter transaction data:\n3 update credit limit\n");
 	}
     return 0;
 }

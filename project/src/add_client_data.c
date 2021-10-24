@@ -1,8 +1,8 @@
 #include <stdio.h>
-#include "master_write.h"
+#include "add_client_data.h"
 #include "struct_data.h"
 
-void master_write(FILE *of_ptr , data client) {
+void add_client_data(FILE *file_pointer , data client) {
 	printf("%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n\n",
 			"1 Number account: ",
 			"2 Client name: ",
@@ -20,8 +20,8 @@ void master_write(FILE *of_ptr , data client) {
 					client.tel_number,
 					&client.indebtedness,
 					&client.credit_limit,
-					&client.cash_payments) != -1) {  // Ввод данных пользователя
-		fprintf(of_ptr, "%-12d%-11s%-11s%-16s%20s%12.2f%12.2f%12.2f\n",
+					&client.cash_payments) != EOF) {  // Ввод данных пользователя
+		fprintf(file_pointer, "%-12d%-11s%-11s%-16s%20s%12.2f%12.2f%12.2f\n",
 							client.number,
 							client.name,
 							client.surname,
