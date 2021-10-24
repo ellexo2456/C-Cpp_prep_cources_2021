@@ -63,8 +63,11 @@ int main(void) {
     read_from_file(record, &got_client_data, 1);
     read_from_file(transaction, &got_transfer, 2);
     read_from_file(blackrecord, &got_updated_credit_limit, 3);
-    float flag = 0;
-    if (expected_client_data.number != got_client_data.number)
+    fclose(record);
+    fclose(transaction);
+    fclose(blackrecord);
+    float flag = 0;  // Позволяет вывести обощающее сообщение об успехе тестов
+    if (expected_client_data.number != got_client_data.number)  // Сравнение ожидаемых и полученных результатов
         puts("File record: number test failed");
     else if (strncmp(expected_client_data.name, got_client_data.name, 25) != 0)
         puts("File record: name test failed");
@@ -113,29 +116,6 @@ int main(void) {
         puts("File blackrecord test if successful");
     }
     if (flag == 1)
-        puts("******ALL TEST IS SUCCESSFUL******");
-    /*(strncmp(expected_client_data.surname, got_client_data.surname, 25) != 0)
-    || (strncmp(expected_client_data.addres, got_client_data.addres, 35) != 0) || (strncmp(expected_client_data.telephone_number, got_client_data.telephone_number, 20) != 0)
-    || (expected_client_data.credit_limit != got_client_data.credit_limit) \
-    || (expected_client_data.indebtedness != got_client_data.indebtedness) || (expected_client_data.cash_payments != got_client_data.cash_payments)) {
-        printf("Error: record.dat file mismatch\n");
-        flag = 0;
-    }
-    if ((expected_transfer.number != got_transfer.number) || (expected_transfer.cash_payments != got_transfer.cash_payments)) {
-        printf("Error: transaction.dat file mismatch\n");
-        flag = 0;
-    }
-    if ((expected_updated_credit_limit.number != got_updated_credit_limit.number) || (strncmp(expected_updated_credit_limit.name, got_updated_credit_limit.name, 25) != 0) || (strncmp(expected_updated_credit_limit.surname, got_updated_credit_limit.surname, 35) != 0) \
-    || (strncmp(expected_updated_credit_limit.addres, got_updated_credit_limit.addres, 35) != 0) || (strncmp(expected_updated_credit_limit.telephone_number, got_updated_credit_limit.telephone_number, 20) != 0) \
-    || (expected_client_data.credit_limit != got_updated_credit_limit.credit_limit) \
-    || (expected_updated_credit_limit.indebtedness != got_updated_credit_limit.indebtedness) || (expected_updated_credit_limit.cash_payments != got_updated_credit_limit.cash_payments)) {
-        printf("Error: record.dat file mismatch\n");
-        flag = 0;    
-    }
-    if (flag)
-        printf("The test is successful\n");*/
-    fclose(record);
-    fclose(transaction);
-    fclose(blackrecord);
+        puts("******ALL TESTS ARE SUCCESSFUL******");
     return 0;
 }

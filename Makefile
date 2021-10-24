@@ -7,7 +7,7 @@ SRCS = \
 	project/src/add_transaction_data.c \
 	project/src/update_credit_limit.c 
 	
-.PHONY: all build rebuild check test memtest clean
+.PHONY: all build rebuild check test memtest clean sh_custom_test
 
 all: clean check test memtest
 
@@ -32,7 +32,7 @@ clean:
 
 #Тестирующий модуль через .sh
 
-start_sh_custom_test: $(TARGET)
+sh_custom_test: $(TARGET)
 	./btests/custom_tests/custom_run.sh
 
 #Тестирующий модуль через функции

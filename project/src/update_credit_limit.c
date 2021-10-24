@@ -4,15 +4,19 @@
 
 void update_credit_limit(FILE *record, FILE *transaction, FILE *blackrecord,
 data client_data, data transfer) {
-	while (fscanf(record, "%d%20s%20s%30s%15s%lf%lf%lf",					// Поиск информации об одном
-					&client_data.number,									// пользователе в двух файлах.
+while (1) {
+		if (fscanf(record, "%d%20s%20s%30s",  // Поиск информации об одном пользователе
+					&client_data.number,  // в двух файлах
 					client_data.name,
 					client_data.surname,
-					client_data.addres,
+					client_data.addres) == EOF)
+			break;
+		if (fscanf(record, "%15s%lf%lf%lf",
 					client_data.telephone_number,
 					&client_data.indebtedness,
 					&client_data.credit_limit,
-					&client_data.cash_payments) != EOF) {
+					&client_data.cash_payments) == EOF)
+			break;
 		while (fscanf(transaction, "%d %lf",  &transfer.number , &transfer.cash_payments) != EOF) {
 			if (client_data.number == transfer.number && transfer.cash_payments != 0) {  // В случае успеха -
 				client_data.credit_limit += transfer.cash_payments;			// обновление информации о кредите.
