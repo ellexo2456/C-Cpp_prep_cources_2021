@@ -3,6 +3,6 @@
 #include <stdio.h>
 #include "struct_data.h"
 
-void add_client_data(FILE *pointer_to_file_record, data client);
+void add_client_data(FILE *record, data client);
 
 #endif  // PROJECT_INCLUDE_ADD_CLIENT_DATA_H_

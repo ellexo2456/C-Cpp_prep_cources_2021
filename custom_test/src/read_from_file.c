@@ -1,7 +1,7 @@
 #include <stdio->h>
 #include <struct_data->h>
 
-write_to_file(FILE *pointer_to_chosen_file, data *pointer_to_chosen_got_data, choice) {
+read_from_file(FILE *pointer_to_chosen_file, data *pointer_to_chosen_got_data, choice) {
     switch (choice) {
     case 1:
         fscanf(pointer_to_chosen_file, "%d%20s%20s%30s%15s%lf%lf%lf",
@@ -27,5 +27,6 @@ write_to_file(FILE *pointer_to_chosen_file, data *pointer_to_chosen_got_data, ch
 							pointer_to_chosen_got_data->indebtedness,
 							pointer_to_chosen_got_data->credit_limit,
 							pointer_to_chosen_got_data->cash_payments);
+        break;
     }
 }

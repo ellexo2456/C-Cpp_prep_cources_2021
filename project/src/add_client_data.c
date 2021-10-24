@@ -2,7 +2,7 @@
 #include "add_client_data.h"
 #include "struct_data.h"
 
-void add_client_data(FILE *file_pointer , data client) {
+void add_client_data(FILE *record, data client) {
 	printf("%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n\n",
 			"1 Number account: ",
 			"2 Client name: ",
@@ -17,16 +17,16 @@ void add_client_data(FILE *file_pointer , data client) {
 					client.name,
 					client.surname,
 					client.addres,
-					client.tel_number,
+					client.telephone_number,
 					&client.indebtedness,
 					&client.credit_limit,
 					&client.cash_payments) != EOF) {  // Ввод данных пользователя
-		fprintf(file_pointer, "%-12d%-11s%-11s%-16s%20s%12.2f%12.2f%12.2f\n",
+		fprintf(record, "%-12d%-11s%-11s%-16s%20s%12.2f%12.2f%12.2f\n",
 							client.number,
 							client.name,
 							client.surname,
 							client.addres,
-							client.tel_number,
+							client.telephone_number,
 							client.indebtedness,
 							client.credit_limit,
 							client.cash_payments);  // Запись данных пользователя в файлл
