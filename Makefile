@@ -32,25 +32,26 @@ clean:
 
 #Тестирующий модуль через .sh
 
-#start_sh_custom_test: $(TARGET)
-#	./btests/custom_tests/custom_run.sh
+start_sh_custom_test: $(TARGET)
+	./btests/custom_tests/custom_run.sh
 
 #Тестирующий модуль через функции
 
-#TEST_TARGET = ./test_main.out
-#TEST_HDRS_DIR = custom_test/include
+TEST_TARGET = ./test_main.out
+TEST_HDRS_DIR = custom_test/include
 
-#TEST_SRCS = \
+TEST_SRCS = \
 	custom_test/src/main.c \
 	custom_test/src/write_to_file.c \
 	custom_test/src/read_from_file.c
 
+.PHONY: test_clean custom_test
 
-#(TEST_TARGET): $(TEST_SRCS) 
-#	$(CC) -Wpedantic -Wall -Wextra -Werror -I $(TEST_HDRS_DIR) -o $(TEST_TARGET) $(CFLAGS) $(TEST_SRCS)
+$(TEST_TARGET): $(TEST_SRCS) 
+	$(CC) -Wpedantic -Wall -Wextra -Werror -I $(TEST_HDRS_DIR) -o $(TEST_TARGET) $(CFLAGS) $(TEST_SRCS)
 
-#custom_test: $(TEST_TARGET)
-#	$(TEST_TARGET)
+custom_test: $(TEST_TARGET)
+	$(TEST_TARGET)
 
-#test_clean:
-#	rm -rf $(TEST_TARGET)
+test_clean:
+	rm -rf $(TEST_TARGET)

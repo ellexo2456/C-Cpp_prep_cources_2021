@@ -7,9 +7,6 @@
 #define ADD_TRANSACTION_DATA case 2
 #define UPDATE_CREDIT_LIMIT case 3
 
-// Тестирущий модуль сделан через (1): .sh файл и (2)...
-// (1) запускать командой make -f TestMakefile из терминала
-
 int main(void) {
 	int choice = 0;
 	FILE *record;
