@@ -6,4 +6,3 @@
 void read_from_file(FILE *chosen_file, data *chosen_got_data, int choice);
 
 #endif  // PROJECT_INCLUDE_ADD_READ_FROM_FILE_H_
-

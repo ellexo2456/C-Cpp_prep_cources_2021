@@ -4,7 +4,6 @@
 #include "write_to_file.h"
 #include "read_from_file.h"
 
-
 int main(void) {
     FILE *record = fopen("record.dat", "w");
     FILE *transaction = fopen("transaction.dat", "w");
@@ -53,7 +52,7 @@ int main(void) {
 	};
     write_to_file(record, expected_client_data, 1);
     write_to_file(transaction, expected_transfer, 2);
-    write_to_file(blackrecord, expected_updated_credit_limit, 3);
+    write_to_file(blackrecord, expected_updated_credit_limit, 1);
     fclose(record);
     fclose(transaction);
     fclose(blackrecord);
@@ -62,7 +61,7 @@ int main(void) {
     blackrecord = fopen("blackrecord.dat", "r");
     read_from_file(record, &got_client_data, 1);
     read_from_file(transaction, &got_transfer, 2);
-    read_from_file(blackrecord, &got_updated_credit_limit, 3);
+    read_from_file(blackrecord, &got_updated_credit_limit, 1);
     fclose(record);
     fclose(transaction);
     fclose(blackrecord);

@@ -3,9 +3,9 @@
 #include "add_transaction_data.h"
 #include "update_credit_limit.h"
 #include "struct_data.h"
-#define ADD_CLIENT_DATA case 1
-#define ADD_TRANSACTION_DATA case 2
-#define UPDATE_CREDIT_LIMIT case 3
+#define ADD_CLIENT_DATA 1
+#define ADD_TRANSACTION_DATA 2
+#define UPDATE_CREDIT_LIMIT 3
 
 int main(void) {
 	int choice = 0;
@@ -27,7 +27,7 @@ int main(void) {
 	printf("please enter action\n1 enter client data:\n2 enter transaction data:\n3 update credit limit\n");
 	while (scanf("%d", &choice) != EOF) {
 		switch (choice) {
-		ADD_CLIENT_DATA:
+		case ADD_CLIENT_DATA:
 			record = fopen("record.dat", "r+");
 			if (record == NULL) {
 				puts("Acess denied");
@@ -36,7 +36,7 @@ int main(void) {
 				fclose(record);
 			}
 			break;
-		ADD_TRANSACTION_DATA:
+		case ADD_TRANSACTION_DATA:
 			transaction = fopen("transaction.dat", "r+");
 			if (transaction == NULL) {
 				puts("Acess denied");
@@ -45,7 +45,7 @@ int main(void) {
 				fclose(transaction);
 			}
 			break;
-		UPDATE_CREDIT_LIMIT:
+		case UPDATE_CREDIT_LIMIT:
 			record = fopen("record.dat", "r");
 			transaction = fopen("transaction.dat", "r");
 			blackrecord = fopen("blackrecord.dat", "w");

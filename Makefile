@@ -41,7 +41,7 @@ TEST_TARGET = ./test_main.out
 TEST_HDRS_DIR = custom_test/include
 
 TEST_SRCS = \
-	custom_test/src/main.c\
+	custom_test/src/main.c \
 	custom_test/src/write_to_file.c \
 	custom_test/src/read_from_file.c
 

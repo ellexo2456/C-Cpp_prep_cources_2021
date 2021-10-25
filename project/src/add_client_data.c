@@ -45,6 +45,6 @@ void add_client_data(FILE *record, data client) {
 			"5 Client Telnum: ",
 			"6 Client indebtedness: ",
 			"7 Client credit limit: ",
-			"9 Client cash payments: ");
+			"8 Client cash payments: ");
 	}
 }
