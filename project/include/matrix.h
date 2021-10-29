@@ -1,5 +1,5 @@
-#ifndef _MATRIX_H_
-#define _MATRIX_H_
+#ifndef PROJECT_INCLUDE_MATRIX_H_
+#define PROJECT_INCLUDE_MATRIX_H_
 
 #include <stddef.h>
 
@@ -23,7 +23,7 @@ int get_cols(const Matrix* matrix_data, size_t* columns);
 int get_elem(const Matrix* matrix_data, size_t row, size_t column, double* val);
 int set_elem(Matrix* matrix_data, size_t row, size_t column, double val);
 
-//Math operations
+// Math operations
 Matrix* mul_scalar(const Matrix* matrix_data, double val);
 Matrix* transp(const Matrix* old_matrix);
 
@@ -36,5 +36,4 @@ int det(const Matrix* matrix, double* val);
 Matrix* adj(const Matrix* matrix);
 Matrix* inv(const Matrix* matrix);
 
-
-#endif //_MATRIX_H_
+#endif  // PROJECT_INCLUDE_MATRIX_H_

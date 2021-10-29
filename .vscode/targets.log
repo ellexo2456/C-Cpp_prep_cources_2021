@@ -6,7 +6,7 @@ make all --print-data-base --no-builtin-variables --no-builtin-rules --question
 # This is free software: you are free to change and redistribute it.
 # There is NO WARRANTY, to the extent permitted by law.
 
-# Make data base, printed on Thu Oct 28 17:27:18 2021
+# Make data base, printed on Fri Oct 29 18:57:20 2021
 
 # Variables
 
@@ -46,14 +46,14 @@ CURDIR := /home/alexey/First
 SHELL = /bin/sh
 # environment
 VSCODE_NLS_CONFIG = {"locale":"ru","availableLanguages":{"*":"ru"},"_languagePackId":"c0154017eafddd7bab935a6fb1a00e9c.ru","_translationsConfigFile":"/home/alexey/.config/Code/clp/c0154017eafddd7bab935a6fb1a00e9c.ru/tcf.json","_cacheRoot":"/home/alexey/.config/Code/clp/c0154017eafddd7bab935a6fb1a00e9c.ru","_resolvedLanguagePackCoreLocation":"/home/alexey/.config/Code/clp/c0154017eafddd7bab935a6fb1a00e9c.ru/6cba118ac49a1b88332f312a8f67186f7f3c1643","_corruptedFile":"/home/alexey/.config/Code/clp/c0154017eafddd7bab935a6fb1a00e9c.ru/corrupted.info","_languagePackSupport":true}
-# makefile (from 'Makefile', line 41)
-TEST_HDRS_DIR = custom_test/include
 # environment
 _ = /usr/share/code/code
 # environment
-JOURNAL_STREAM = 8:32360
+JOURNAL_STREAM = 8:32691
 # environment
 XDG_CONFIG_DIRS = /etc/xdg/xdg-ubuntu:/etc/xdg
+# makefile (from 'Makefile', line 7)
+HDRS = project/include
 # makefile (from 'Makefile', line 1)
 MAKEFILE_LIST :=  Makefile
 # automatic
@@ -71,7 +71,7 @@ DBUS_SESSION_BUS_ADDRESS = unix:path=/run/user/1000/bus
 # environment
 VSCODE_VERBOSE_LOGGING = true
 # environment
-MANAGERPID = 822
+MANAGERPID = 826
 # environment
 LESSOPEN = | /usr/bin/lesspipe %s
 # environment
@@ -80,12 +80,12 @@ VSCODE_CWD = /home/alexey
 MAKE_HOST := x86_64-pc-linux-gnu
 # environment
 PATH = /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin
+# makefile (from 'Makefile', line 19)
+TST_SRCS = project/src/matrix.c project/tests/src/*.c
 # environment
 GPG_AGENT_INFO = /run/user/1000/gnupg/S.gpg-agent:0:1
-# makefile (from 'Makefile', line 2)
-HDRS_DIR = project/include
 # environment
-SESSION_MANAGER = local/pc:@/tmp/.ICE-unix/1117,unix/pc:/tmp/.ICE-unix/1117
+SESSION_MANAGER = local/pc:@/tmp/.ICE-unix/1148,unix/pc:/tmp/.ICE-unix/1148
 # environment
 XDG_RUNTIME_DIR = /run/user/1000
 # environment
@@ -95,7 +95,7 @@ VSCODE_LOG_STACK = false
 # environment
 VSCODE_CRASH_REPORTER_START_OPTIONS = {"companyName":"Microsoft","productName":"VSCode","submitURL":"appcenter://code?aid=fba07a4d-84bd-4fc8-a125-9640fc8ce171&uid=3f22a4ba-ccc2-4eb0-81a6-e8564babdefb&iid=3f22a4ba-ccc2-4eb0-81a6-e8564babdefb&sid=3f22a4ba-ccc2-4eb0-81a6-e8564babdefb","uploadToServer":true}
 # environment
-INVOCATION_ID = 13f31ca0a95e4bd4b186f282a043d09a
+INVOCATION_ID = 05c52ae23f66414082751aa90ce18cdd
 # default
 .FEATURES := target-specific order-only second-expansion else-if shortest-stem undefine oneshell archives jobserver output-sync check-symlink load
 # environment
@@ -105,7 +105,7 @@ XDG_SESSION_DESKTOP = ubuntu
 # environment
 SSH_AUTH_SOCK = /run/user/1000/keyring/ssh
 # environment
-GIO_LAUNCHED_DESKTOP_FILE_PID = 13680
+GIO_LAUNCHED_DESKTOP_FILE_PID = 2293
 # automatic
 %F = $(notdir $%)
 # environment
@@ -117,7 +117,7 @@ PWD = /home/alexey/First
 # default
 .LOADED := 
 # environment
-SSH_AGENT_PID = 1074
+SSH_AGENT_PID = 1101
 # environment
 ORIGINAL_XDG_CURRENT_DESKTOP = ubuntu:GNOME
 # environment
@@ -126,6 +126,8 @@ GTK_MODULES = gail:atk-bridge
 VSCODE_AMD_ENTRYPOINT = vs/workbench/services/extensions/node/extensionHostProcess
 # environment
 HOME = /home/alexey
+# makefile (from 'Makefile', line 2)
+TST_TARGET = ./tests.out
 # environment
 LESSCLOSE = /usr/bin/lesspipe %s %s
 # environment
@@ -148,14 +150,14 @@ MAKE = $(MAKE_COMMAND)
 MAKECMDGOALS := all
 # environment
 QT_IM_MODULE = ibus
-# makefile (from 'Makefile', line 4)
-SRCS = project/src/main.c project/src/add_client_data.c project/src/add_transaction_data.c project/src/update_credit_limit.c 
+# makefile (from 'Makefile', line 10)
+SRCS = project/src/main.c project/src/matrix.c
 # environment
 SHLVL = 0
 # environment
 GNOME_SHELL_SESSION_MODE = ubuntu
 # environment
-VSCODE_IPC_HOOK_EXTHOST = /run/user/1000/vscode-ipc-7498c6a5-b724-4278-9766-cbc2817c37ea.sock
+VSCODE_IPC_HOOK_EXTHOST = /run/user/1000/vscode-ipc-ef856b34-2688-44db-b9e5-3464b3d618c1.sock
 # default
 MAKE_VERSION := 4.2.1
 # environment
@@ -188,14 +190,16 @@ BREAKPAD_DUMP_LOCATION = /home/alexey/.config/Code/exthost Crash Reports
 GDK_BACKEND = x11
 # automatic
 +F = $(notdir $+)
-# makefile (from 'Makefile', line 43)
-TEST_SRCS = custom_test/src/main.c custom_test/src/write_to_file.c custom_test/src/read_from_file.c
+# makefile (from 'Makefile', line 3)
+VALGRIND_LOG = "valgrind.log"
 # environment
 QT_ACCESSIBILITY = 1
 # environment
 DEFAULTS_PATH = /usr/share/gconf/ubuntu.default.path
 # default
 MAKEFILES := 
+# makefile (from 'Makefile', line 15)
+TST_HDRS = project/include project/tests/include
 # automatic
 <F = $(notdir $<)
 # environment
@@ -221,11 +225,9 @@ GJS_DEBUG_OUTPUT = stderr
 # environment
 LANG = C
 # environment
-VSCODE_PID = 13680
-# makefile (from 'Makefile', line 40)
-TEST_TARGET = ./test_main.out
+VSCODE_PID = 2293
 # variable set hash-table stats:
-# Load=107/1024=10%, Rehash=0, Collisions=15/145=10%
+# Load=108/1024=11%, Rehash=0, Collisions=18/148=12%
 
 # Pattern-specific Variable Values
 
@@ -233,9 +235,10 @@ TEST_TARGET = ./test_main.out
 
 # Directories
 
-# . (device 2056, inode 1200654): 19 files, no impossibilities.
+# . (device 2056, inode 1200654): 15 files, no impossibilities.
+# project/tests/src (device 2056, inode 1189181): 12 files, no impossibilities.
 
-# 19 files, no impossibilities in 1 directories.
+# 27 files, no impossibilities in 2 directories.
 
 # Implicit Rules
 
@@ -244,12 +247,12 @@ TEST_TARGET = ./test_main.out
 # Files
 
 # Not a target:
-custom_test/src/write_to_file.c:
+project/tests/src/test_matrix_transponse.c:
 #  Implicit rule search has not been done.
 #  Modification time never checked.
 #  File has not been updated.
 
-all: clean check test memtest
+all: clean check build test memtest testextra memtestextra
 #  Phony target (prerequisite of .PHONY).
 #  Command line target.
 #  Implicit rule search has not been done.
@@ -257,28 +260,32 @@ all: clean check test memtest
 #  File has been updated.
 #  Needs to be updated (-q is set).
 # variable set hash-table stats:
-# Load=0/32=0%, Rehash=0, Collisions=0/4=0%
+# Load=0/32=0%, Rehash=0, Collisions=0/6=0%
 
-main.out: project/src/main.c project/src/add_client_data.c project/src/add_transaction_data.c project/src/update_credit_limit.c
-#  Implicit rule search has not been done.
-#  Modification time never checked.
-#  File has not been updated.
-#  recipe to execute (from 'Makefile', line 15):
-	$(CC) -Wpedantic -Wall -Wextra -Werror -I $(HDRS_DIR) -o $(TARGET) $(CFLAGS) $(SRCS)
-
-.PHONY: all build rebuild check test memtest clean sh_custom_test test_clean custom_test
+# Not a target:
+project/tests/src/test_matrix_determinant.c:
 #  Implicit rule search has not been done.
 #  Modification time never checked.
 #  File has not been updated.
 
-sh_custom_test: main.out
-#  Phony target (prerequisite of .PHONY).
+main.out: project/src/main.c project/src/matrix.c
 #  Implicit rule search has not been done.
-#  File does not exist.
+#  Modification time never checked.
 #  File has not been updated.
-#  recipe to execute (from 'Makefile', line 36):
+#  recipe to execute (from 'Makefile', line 47):
+	$(CC) -Wall -Wextra -Werror $(addprefix -I,$(HDRS)) -o $(TARGET) $(CFLAGS) $(SRCS) -lm
+
+.PHONY: all check build test memtest testextra memtestextra rebuild clean
+#  Implicit rule search has not been done.
  
-	./btests/custom_tests/custom_run.sh
+#  Modification time never checked.
+#  File has not been updated.
+
+# Not a target:
+project/tests/src/utils.c:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
 
 # Not a target:
 .SUFFIXES:
@@ -289,7 +296,7 @@ sh_custom_test: main.out
 # Not a target:
 Makefile:
 #  Implicit rule search has been done.
-#  Last modified 2021-10-25 18:03:35.496137215
+#  Last modified 2021-10-29 18:20:21.045711694
 #  File has been updated.
 #  Successfully updated.
 
@@ -299,20 +306,13 @@ rebuild: clean build
 #  File does not exist.
 #  File has not been updated.
 
-test: main.out
+test: tests.out
 #  Phony target (prerequisite of .PHONY).
 #  Implicit rule search has not been done.
 #  File does not exist.
 #  File has not been updated.
-#  recipe to execute (from 'Makefile', line 25):
-	./btests/run.sh $(TARGET)
-
-test_main.out: custom_test/src/main.c custom_test/src/write_to_file.c custom_test/src/read_from_file.c
-#  Implicit rule search has not been done.
-#  Modification time never checked.
-#  File has not been updated.
-#  recipe to execute (from 'Makefile', line 51):
-	$(CC) -Wpedantic -Wall -Wextra -Werror -I $(TEST_HDRS_DIR) -o $(TEST_TARGET) $(CFLAGS) $(TEST_SRCS)
+#  recipe to execute (from 'Makefile', line 33):
+	$(TST_TARGET)
 
 build: main.out
 #  Phony target (prerequisite of .PHONY).
@@ -321,30 +321,37 @@ build: main.out
 #  File has not been updated.
 
 # Not a target:
-custom_test/src/main.c:
+project/tests/src/test_matrix_inverse.c:
 #  Implicit rule search has not been done.
 #  Modification time never checked.
 #  File has not been updated.
 
-# Not a target:
-project/src/add_transaction_data.c:
-#  Implicit rule search has not been done.
-#  Modification time never checked.
-#  File has not been updated.
-
-memtest: main.out
+memtest: tests.out
 #  Phony target (prerequisite of .PHONY).
 #  Implicit rule search has not been done.
 #  File does not exist.
 #  File has not been updated.
-#  recipe to execute (from 'Makefile', line 28):
-	./btests/run.sh $(TARGET) --memcheck
+#  recipe to execute (from 'Makefile', line 36):
+	./project/tests/memtest.sh ${TST_TARGET}
 
 # Not a target:
-project/src/add_client_data.c:
+project/tests/src/test_matrix_adjugate.c:
 #  Implicit rule search has not been done.
 #  Modification time never checked.
 #  File has not been updated.
+
+# Not a target:
+project/tests/src/test_matrix_arithmetic.c:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+tests.out: project/src/matrix.c project/tests/src/test_scalar_mul.c project/tests/src/test_matrix_determinant.c project/tests/src/test_element_setting.c project/tests/src/test_matrix_arithmetic.c project/tests/src/test_matrix_adjugate.c project/tests/src/utils.c project/tests/src/test_matrix_transponse.c project/tests/src/main.c project/tests/src/test_matrix_inverse.c project/tests/src/test_matrix_creating.c
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (from 'Makefile', line 50):
+	$(CC) -Wall -Wextra -Werror $(addprefix -I,$(TST_HDRS)) -o $(TST_TARGET) $(CFLAGS) $(TST_SRCS) -lm
 
 # Not a target:
 .DEFAULT:
@@ -352,21 +359,11 @@ project/src/add_client_data.c:
 #  Modification time never checked.
 #  File has not been updated.
 
-custom_test: test_main.out
-#  Phony target (prerequisite of .PHONY).
+# Not a target:
+project/tests/src/test_matrix_creating.c:
 #  Implicit rule search has not been done.
-#  File does not exist.
+#  Modification time never checked.
 #  File has not been updated.
-#  recipe to execute (from 'Makefile', line 54):
-	$(TEST_TARGET)
-
-test_clean:
-#  Phony target (prerequisite of .PHONY).
-#  Implicit rule search has not been done.
-#  File does not exist.
-#  File has not been updated.
-#  recipe to execute (from 'Makefile', line 57):
-	rm -rf $(TEST_TARGET)
 
 clean:
 #  Phony target (prerequisite of .PHONY).
@@ -392,12 +389,40 @@ clean:
 # automatic
 # ? := 
 # variable set hash-table stats:
-# Load=8/32=25%, Rehash=0, Collisions=1/12=8%
-#  recipe to execute (from 'Makefile', line 31):
-	rm -rf $(TARGET)
+# Load=8/32=25%, Rehash=0, Collisions=1/14=7%
+#  recipe to execute (from 'Makefile', line 53):
+	rm -f $(TARGET) $(TST_TARGET) ${VALGRIND_LOG}
 
 # Not a target:
-custom_test/src/read_from_file.c:
+project/src/matrix.c:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+testextra: tests.out
+#  Phony target (prerequisite of .PHONY).
+#  Implicit rule search has not been done.
+#  File does not exist.
+#  File has not been updated.
+#  recipe to execute (from 'Makefile', line 39):
+	$(TST_TARGET) --with-extra
+
+# Not a target:
+project/tests/src/main.c:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+memtestextra: tests.out
+#  Phony target (prerequisite of .PHONY).
+#  Implicit rule search has not been done.
+#  File does not exist.
+#  File has not been updated.
+#  recipe to execute (from 'Makefile', line 42):
+	./project/tests/memtest.sh ${TST_TARGET} --with-extra
+
+# Not a target:
+project/tests/src/test_scalar_mul.c:
 #  Implicit rule search has not been done.
 #  Modification time never checked.
 #  File has not been updated.
@@ -407,7 +432,7 @@ check:
 #  Implicit rule search has not been done.
 #  File does not exist.
 #  File has not been updated.
-#  recipe to execute (from 'Makefile', line 22):
+#  recipe to execute (from 'Makefile', line 28):
 	./linters/run.sh
 
 # Not a target:
@@ -417,25 +442,25 @@ project/src/main.c:
 #  File has not been updated.
 
 # Not a target:
-project/src/update_credit_limit.c:
+project/tests/src/test_element_setting.c:
 #  Implicit rule search has not been done.
 #  Modification time never checked.
 #  File has not been updated.
 
 # files hash-table stats:
-# Load=23/1024=2%, Rehash=0, Collisions=3/73=4%
+# Load=27/1024=3%, Rehash=0, Collisions=0/85=0%
 # VPATH Search Paths
 
 # No 'vpath' search paths.
 
 # No general ('VPATH' variable) search path.
 
-# strcache buffers: 1 (0) / strings = 40 / storage = 515 B / avg = 12 B
-# current buf: size = 8162 B / used = 515 B / count = 40 / avg = 12 B
+# strcache buffers: 1 (0) / strings = 52 / storage = 892 B / avg = 17 B
+# current buf: size = 8162 B / used = 892 B / count = 52 / avg = 17 B
 
-# strcache performance: lookups = 85 / hit rate = 52%
+# strcache performance: lookups = 98 / hit rate = 46%
 # hash-table stats:
-# Load=40/8192=0%, Rehash=0, Collisions=1/85=1%
-# Finished Make data base on Thu Oct 28 17:27:18 2021
+# Load=52/8192=1%, Rehash=0, Collisions=2/98=2%
+# Finished Make data base on Fri Oct 29 18:57:20 2021
 
  

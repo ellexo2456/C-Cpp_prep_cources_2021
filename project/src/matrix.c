@@ -8,6 +8,10 @@ Matrix* create_matrix_from_file(const char* file_path) {
     if (file == NULL)
         return NULL;
     fscanf(file, "%zu%zu", &matrix_data.rows, &matrix_data.columns);
+    if (matrix_data.rows == 0 || matrix_data.columns == 0) {
+        fclose(file);
+        return NULL;
+    }
     matrix_data.matrix = (double**)malloc(matrix_data.rows*sizeof(double*));
     if (matrix_data.matrix == NULL) {
         fclose(file);
@@ -30,9 +34,9 @@ Matrix* create_matrix(size_t rows, size_t columns) {
     static Matrix matrix_data;
     matrix_data.rows = rows;
     matrix_data.columns = columns;
-    matrix_data.matrix = (double**)calloc(matrix_data.rows, sizeof(double*));
-    if (matrix_data.matrix == NULL)
+    if (matrix_data.rows == 0 || matrix_data.columns == 0)
         return NULL;
+    matrix_data.matrix = (double**)calloc(matrix_data.rows, sizeof(double*));
     for (size_t i = 0; i < matrix_data.rows; i++) {
         matrix_data.matrix[i] = (double*)calloc(matrix_data.columns, sizeof(double));
         if (matrix_data.matrix == NULL)
@@ -94,6 +98,8 @@ Matrix* transp(const Matrix* old_matrix) {
     static Matrix transposed_matrix;
     transposed_matrix.rows = old_matrix->columns;
     transposed_matrix.columns = old_matrix->rows;
+    if (transposed_matrix.rows == 0 || transposed_matrix.columns == 0)
+        return NULL;
     transposed_matrix.matrix = (double**)malloc(transposed_matrix.rows*sizeof(double*));
     if (transposed_matrix.matrix == NULL)
         return NULL;
@@ -108,12 +114,14 @@ Matrix* transp(const Matrix* old_matrix) {
 }
 
 Matrix* sum(const Matrix* left, const Matrix* right) {
-if ((left == NULL) || (right == NULL))
+    if (left == NULL || right == NULL)
         return NULL;
     static Matrix calculated_matrix;
     calculated_matrix.rows = left->rows;
     calculated_matrix.columns = left->columns;
-    printf("\nLEFT\n");
+    if (calculated_matrix.rows == 0 || calculated_matrix.columns == 0)
+        return NULL;
+    /*printf("\nLEFT\n");
     printf("%zu %zu\n", left->rows, left->columns);
     for (size_t i = 0; i < left->rows; i++) {
         for (size_t j = 0; j < left->columns; j++)
@@ -125,7 +133,7 @@ if ((left == NULL) || (right == NULL))
         for (size_t j = 0; j < right->columns; j++)
             printf("%lf ", right->matrix[i][j]);
         printf("\n");
-    }
+    } */
     calculated_matrix.matrix = (double**)malloc(calculated_matrix.rows*sizeof(double*));
     if (calculated_matrix.matrix == NULL)
         return NULL;
@@ -134,18 +142,22 @@ if ((left == NULL) || (right == NULL))
         if (calculated_matrix.matrix == NULL)
             return NULL;
         for (size_t j = 0; j < calculated_matrix.columns; j++) {
-            calculated_matrix.matrix[i][j] = (left->matrix[i][j] + right->matrix[i][j]);
+            calculated_matrix.matrix[i][j] = left->matrix[i][j] + right->matrix[i][j];
         }
     }
     return &calculated_matrix;
 }
 
 Matrix* sub(const Matrix* left, const Matrix* right) {
-if ((left == NULL) || (right == NULL))
+    if (left == NULL || right == NULL) {
         return NULL;
+    }
     static Matrix calculated_matrix;
     calculated_matrix.rows = left->rows;
     calculated_matrix.columns = left->columns;
+    if (calculated_matrix.rows == 0 || calculated_matrix.columns == 0) {
+        return NULL;
+    }
     calculated_matrix.matrix = (double**)malloc(calculated_matrix.rows*sizeof(double*));
     if (calculated_matrix.matrix == NULL)
         return NULL;
@@ -153,18 +165,22 @@ if ((left == NULL) || (right == NULL))
         calculated_matrix.matrix[i] = (double*)malloc(calculated_matrix.columns*sizeof(double));
         if (calculated_matrix.matrix == NULL)
             return NULL;
-        for (size_t j = 0; j < calculated_matrix.columns; j++) 
+        for (size_t j = 0; j < calculated_matrix.columns; j++)
             calculated_matrix.matrix[i][j] = 0;
     }
     return &calculated_matrix;
 }
 
 Matrix* mul(const Matrix* left, const Matrix* right) {
-if ((left == NULL) || (right == NULL))
+if (left == NULL || right == NULL) {
         return NULL;
+    }
     static Matrix calculated_matrix;
     calculated_matrix.rows = left->rows;
     calculated_matrix.columns = left->columns;
+    if (calculated_matrix.rows == 0 || calculated_matrix.columns == 0) {
+        return NULL;
+    }
     calculated_matrix.matrix = (double**)malloc(calculated_matrix.rows*sizeof(double*));
     if (calculated_matrix.matrix == NULL)
         return NULL;
