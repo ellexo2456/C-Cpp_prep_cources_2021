@@ -32,7 +32,7 @@ Matrix* sub(const Matrix* left, const Matrix* right);
 Matrix* mul(const Matrix* left, const Matrix* right);
 
 // Extra operations
-int det(const Matrix* matrix, double* value);
+int det(const Matrix* matrix_data, double* value);
 Matrix* adj(const Matrix* matrix);
 Matrix* inv(const Matrix* matrix);
 

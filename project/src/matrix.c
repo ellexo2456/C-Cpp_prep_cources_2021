@@ -182,12 +182,39 @@ Matrix* mul(const Matrix* left, const Matrix* right) {
     return calculated_matrix;
 }
 
-int det(const Matrix* matrix, double* value) {  // Заглушки для пока не используемых функций
-    *value = matrix->rows;
-    double a =*value;
-    return a;
+int det(const Matrix* matrix_data, double* value) {
+    if (value == NULL || matrix_data == NULL)
+        return -1;
+    if (matrix_data->rows == 2) {
+        *value = matrix_data->matrix[1][0]*matrix_data->matrix[1][1] \
+        - matrix_data->matrix[0][1]*matrix_data->matrix[1][0];
+        return 0;
     }
+    for (size_t j = 0; j < matrix_data->columns; j++) {
+        Matrix* decomposition_matrix = create_matrix(matrix_data->rows - 1, matrix_data->columns - 1);
+        if (decomposition_matrix == NULL)
+            return -1;
+        decomposition_matrix->rows = matrix_data->rows - 1;
+        decomposition_matrix->columns = matrix_data->columns - 1;
+        for (size_t k = 1; k < matrix_data->rows; k++) {  // Создание матрицы для рекурсии
+            size_t m = 0;
+            for (size_t l = 0; l < matrix_data->rows; l++) {
+                if (l == j)
+                    continue;
+                decomposition_matrix->matrix[k-1][m++] = matrix_data->matrix[k][l];
+            }
+        }
+        if (det(decomposition_matrix, value) != 0)
+            return -1;
+        if (j % 2 == 0)
+            *value += matrix_data->matrix[0][j] * *value;
+        else
+            *value -= matrix_data->matrix[0][j] * *value;
+        free_matrix(decomposition_matrix);
+    }
+    return 0;
+}
 
-Matrix* adj(const Matrix* matrix) {return (Matrix*)matrix;}
+Matrix* adj(const Matrix* matrix) {return (Matrix*)matrix;}  // Заглушки для пока не используемых функций
 
 Matrix* inv(const Matrix* matrix) {return (Matrix*)matrix;}
