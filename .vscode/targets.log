@@ -1,29 +1,53 @@
 make all --print-data-base --no-builtin-variables --no-builtin-rules --question
 # GNU Make 4.2.1
+ 
 # Built for x86_64-pc-linux-gnu
+ 
 # Copyright (C) 1988-2016 Free Software Foundation, Inc.
+ 
 # License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
+ 
 # This is free software: you are free to change and redistribute it.
+ 
 # There is NO WARRANTY, to the extent permitted by law.
+ 
 
-# Make data base, printed on Sun Oct 31 08:07:36 2021
+ 
+# Make data base, printed on Sun Oct 31 19:38:14 2021
+ 
 
 # Variables
+ 
 
+ 
 # 'override' directive
+ 
 GNUMAKEFLAGS := 
+ 
 # automatic
+ 
 <D = $(patsubst %/,%,$(dir $<))
+ 
 # automatic
+ 
 ?F = $(notdir $?)
+ 
 # environment
+ 
 DESKTOP_SESSION = ubuntu
+ 
 # default
+ 
 .SHELLFLAGS := -c
+ 
 # environment
+ 
 XDG_SESSION_CLASS = user
+ 
 # environment
+ 
 XDG_SESSION_TYPE = x11
+ 
 # environment
 VSCODE_LOG_NATIVE = false
 # makefile (from 'Makefile', line 1)
@@ -49,7 +73,7 @@ VSCODE_NLS_CONFIG = {"locale":"ru","availableLanguages":{"*":"ru"},"_languagePac
 # environment
 _ = /usr/share/code/code
 # environment
-JOURNAL_STREAM = 8:118682
+JOURNAL_STREAM = 8:32356
 # environment
 XDG_CONFIG_DIRS = /etc/xdg/xdg-ubuntu:/etc/xdg
 # makefile (from 'Makefile', line 7)
@@ -71,7 +95,7 @@ DBUS_SESSION_BUS_ADDRESS = unix:path=/run/user/1000/bus
 # environment
 VSCODE_VERBOSE_LOGGING = true
 # environment
-MANAGERPID = 10898
+MANAGERPID = 816
 # environment
 LESSOPEN = | /usr/bin/lesspipe %s
 # environment
@@ -85,7 +109,7 @@ TST_SRCS = project/src/matrix.c project/tests/src/*.c
 # environment
 GPG_AGENT_INFO = /run/user/1000/gnupg/S.gpg-agent:0:1
 # environment
-SESSION_MANAGER = local/pc:@/tmp/.ICE-unix/11127,unix/pc:/tmp/.ICE-unix/11127
+SESSION_MANAGER = local/pc:@/tmp/.ICE-unix/1136,unix/pc:/tmp/.ICE-unix/1136
 # environment
 XDG_RUNTIME_DIR = /run/user/1000
 # environment
@@ -95,7 +119,7 @@ VSCODE_LOG_STACK = false
 # environment
 VSCODE_CRASH_REPORTER_START_OPTIONS = {"companyName":"Microsoft","productName":"VSCode","submitURL":"appcenter://code?aid=fba07a4d-84bd-4fc8-a125-9640fc8ce171&uid=3f22a4ba-ccc2-4eb0-81a6-e8564babdefb&iid=3f22a4ba-ccc2-4eb0-81a6-e8564babdefb&sid=3f22a4ba-ccc2-4eb0-81a6-e8564babdefb","uploadToServer":true}
 # environment
-INVOCATION_ID = 71da174ac47046b3abf98e4a4fdf45d5
+INVOCATION_ID = 052bb7575e6a4c86ae1e13477389b609
 # default
 .FEATURES := target-specific order-only second-expansion else-if shortest-stem undefine oneshell archives jobserver output-sync check-symlink load
 # environment
@@ -105,7 +129,7 @@ XDG_SESSION_DESKTOP = ubuntu
 # environment
 SSH_AUTH_SOCK = /run/user/1000/keyring/ssh
 # environment
-GIO_LAUNCHED_DESKTOP_FILE_PID = 13051
+GIO_LAUNCHED_DESKTOP_FILE_PID = 2659
 # automatic
 %F = $(notdir $%)
 # environment
@@ -117,7 +141,7 @@ PWD = /home/alexey/First
 # default
 .LOADED := 
 # environment
-SSH_AGENT_PID = 11083
+SSH_AGENT_PID = 1092
 # environment
 ORIGINAL_XDG_CURRENT_DESKTOP = ubuntu:GNOME
 # environment
@@ -157,7 +181,7 @@ SHLVL = 0
 # environment
 GNOME_SHELL_SESSION_MODE = ubuntu
 # environment
-VSCODE_IPC_HOOK_EXTHOST = /run/user/1000/vscode-ipc-efbf2759-9fd4-4826-9e0e-5cf8ea7530b3.sock
+VSCODE_IPC_HOOK_EXTHOST = /run/user/1000/vscode-ipc-d3337e6e-a059-4b43-ab44-e9eccda870d4.sock
 # default
 MAKE_VERSION := 4.2.1
 # environment
@@ -168,6 +192,7 @@ USER = alexey
 XDG_CURRENT_DESKTOP = Unity
 # automatic
 %D = $(patsubst %/,%,$(dir $%))
+ 
 # default
 MAKE_COMMAND := make
 # default
@@ -225,9 +250,11 @@ GJS_DEBUG_OUTPUT = stderr
 # environment
 LANG = C
 # environment
-VSCODE_PID = 13051
+VSCODE_PID = 2659
 # variable set hash-table stats:
+ 
 # Load=108/1024=11%, Rehash=0, Collisions=18/148=12%
+ 
 
 # Pattern-specific Variable Values
 
@@ -236,7 +263,7 @@ VSCODE_PID = 13051
 # Directories
 
 # . (device 2056, inode 1200654): 15 files, no impossibilities.
-# project/tests/src (device 2056, inode 1189181): 12 files, no impossibilities.
+# project/tests/src (device 2056, inode 1704144): 12 files, no impossibilities.
 
 # 27 files, no impossibilities in 2 directories.
 
@@ -277,7 +304,6 @@ main.out: project/src/main.c project/src/matrix.c
 
 .PHONY: all check build test memtest testextra memtestextra rebuild clean
 #  Implicit rule search has not been done.
- 
 #  Modification time never checked.
 #  File has not been updated.
 
@@ -296,7 +322,7 @@ project/tests/src/utils.c:
 # Not a target:
 Makefile:
 #  Implicit rule search has been done.
-#  Last modified 2021-10-29 18:20:21.045711694
+#  Last modified 2021-10-31 18:21:14.29789419
 #  File has been updated.
 #  Successfully updated.
 
@@ -461,6 +487,6 @@ project/tests/src/test_element_setting.c:
 # strcache performance: lookups = 98 / hit rate = 46%
 # hash-table stats:
 # Load=52/8192=1%, Rehash=0, Collisions=2/98=2%
-# Finished Make data base on Sun Oct 31 08:07:36 2021
+# Finished Make data base on Sun Oct 31 19:38:14 2021
 
  

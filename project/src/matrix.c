@@ -122,7 +122,7 @@ Matrix* mul_scalar(const Matrix* matrix_data, double value) {
             calculated_matrix->matrix[i][j] = matrix_data->matrix[i][j] * value;
         }
     }
-    return calculated_matrix;
+        return calculated_matrix;
 }
 
 Matrix* transp(const Matrix* old_matrix) {
@@ -276,6 +276,7 @@ Matrix* adj(const Matrix* matrix_data) {
             }
             double minor = 0;
             if (det(cofactor_matrix, &minor) != 0) {
+                free_matrix(adjugate_matrix);
                 free_matrix(transposed_matrix);
                 free_matrix(cofactor_matrix);
                 return NULL;
@@ -288,4 +289,8 @@ Matrix* adj(const Matrix* matrix_data) {
     return (Matrix*)adjugate_matrix;
 }
 
-Matrix* inv(const Matrix* matrix) {return (Matrix*)matrix;}
+
+Matrix* inv(const Matrix* matrix_data) {
+    double determinant = 0;
+    return mul_scalar(adj(matrix_data), pow(determinant, -1));
+}
