@@ -6,7 +6,7 @@ make all --print-data-base --no-builtin-variables --no-builtin-rules --question
 # This is free software: you are free to change and redistribute it.
 # There is NO WARRANTY, to the extent permitted by law.
 
-# Make data base, printed on Sat Oct 30 21:50:26 2021
+# Make data base, printed on Sun Oct 31 08:07:36 2021
 
 # Variables
 
@@ -49,7 +49,7 @@ VSCODE_NLS_CONFIG = {"locale":"ru","availableLanguages":{"*":"ru"},"_languagePac
 # environment
 _ = /usr/share/code/code
 # environment
-JOURNAL_STREAM = 8:33107
+JOURNAL_STREAM = 8:118682
 # environment
 XDG_CONFIG_DIRS = /etc/xdg/xdg-ubuntu:/etc/xdg
 # makefile (from 'Makefile', line 7)
@@ -71,7 +71,7 @@ DBUS_SESSION_BUS_ADDRESS = unix:path=/run/user/1000/bus
 # environment
 VSCODE_VERBOSE_LOGGING = true
 # environment
-MANAGERPID = 841
+MANAGERPID = 10898
 # environment
 LESSOPEN = | /usr/bin/lesspipe %s
 # environment
@@ -85,7 +85,7 @@ TST_SRCS = project/src/matrix.c project/tests/src/*.c
 # environment
 GPG_AGENT_INFO = /run/user/1000/gnupg/S.gpg-agent:0:1
 # environment
-SESSION_MANAGER = local/pc:@/tmp/.ICE-unix/1155,unix/pc:/tmp/.ICE-unix/1155
+SESSION_MANAGER = local/pc:@/tmp/.ICE-unix/11127,unix/pc:/tmp/.ICE-unix/11127
 # environment
 XDG_RUNTIME_DIR = /run/user/1000
 # environment
@@ -95,7 +95,7 @@ VSCODE_LOG_STACK = false
 # environment
 VSCODE_CRASH_REPORTER_START_OPTIONS = {"companyName":"Microsoft","productName":"VSCode","submitURL":"appcenter://code?aid=fba07a4d-84bd-4fc8-a125-9640fc8ce171&uid=3f22a4ba-ccc2-4eb0-81a6-e8564babdefb&iid=3f22a4ba-ccc2-4eb0-81a6-e8564babdefb&sid=3f22a4ba-ccc2-4eb0-81a6-e8564babdefb","uploadToServer":true}
 # environment
-INVOCATION_ID = befdcac27b4e4022bf32ad63aa0d1852
+INVOCATION_ID = 71da174ac47046b3abf98e4a4fdf45d5
 # default
 .FEATURES := target-specific order-only second-expansion else-if shortest-stem undefine oneshell archives jobserver output-sync check-symlink load
 # environment
@@ -105,7 +105,7 @@ XDG_SESSION_DESKTOP = ubuntu
 # environment
 SSH_AUTH_SOCK = /run/user/1000/keyring/ssh
 # environment
-GIO_LAUNCHED_DESKTOP_FILE_PID = 5171
+GIO_LAUNCHED_DESKTOP_FILE_PID = 13051
 # automatic
 %F = $(notdir $%)
 # environment
@@ -117,7 +117,7 @@ PWD = /home/alexey/First
 # default
 .LOADED := 
 # environment
-SSH_AGENT_PID = 1111
+SSH_AGENT_PID = 11083
 # environment
 ORIGINAL_XDG_CURRENT_DESKTOP = ubuntu:GNOME
 # environment
@@ -157,7 +157,7 @@ SHLVL = 0
 # environment
 GNOME_SHELL_SESSION_MODE = ubuntu
 # environment
-VSCODE_IPC_HOOK_EXTHOST = /run/user/1000/vscode-ipc-984648cf-a66d-45db-91fa-dd8753398037.sock
+VSCODE_IPC_HOOK_EXTHOST = /run/user/1000/vscode-ipc-efbf2759-9fd4-4826-9e0e-5cf8ea7530b3.sock
 # default
 MAKE_VERSION := 4.2.1
 # environment
@@ -225,7 +225,7 @@ GJS_DEBUG_OUTPUT = stderr
 # environment
 LANG = C
 # environment
-VSCODE_PID = 5171
+VSCODE_PID = 13051
 # variable set hash-table stats:
 # Load=108/1024=11%, Rehash=0, Collisions=18/148=12%
 
@@ -277,6 +277,7 @@ main.out: project/src/main.c project/src/matrix.c
 
 .PHONY: all check build test memtest testextra memtestextra rebuild clean
 #  Implicit rule search has not been done.
+ 
 #  Modification time never checked.
 #  File has not been updated.
 
@@ -295,7 +296,6 @@ project/tests/src/utils.c:
 # Not a target:
 Makefile:
 #  Implicit rule search has been done.
- 
 #  Last modified 2021-10-29 18:20:21.045711694
 #  File has been updated.
 #  Successfully updated.
@@ -461,6 +461,6 @@ project/tests/src/test_element_setting.c:
 # strcache performance: lookups = 98 / hit rate = 46%
 # hash-table stats:
 # Load=52/8192=1%, Rehash=0, Collisions=2/98=2%
-# Finished Make data base on Sat Oct 30 21:50:26 2021
+# Finished Make data base on Sun Oct 31 08:07:36 2021
 
  

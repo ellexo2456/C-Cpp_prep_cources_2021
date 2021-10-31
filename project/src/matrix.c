@@ -1,12 +1,14 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include <math.h>
 #include "matrix.h"
 
 Matrix* create_matrix_from_file(const char* file_path) {
     FILE* file = fopen(file_path, "r");
     if (file == NULL)
         return NULL;
+    // printf("\n***********%s***********\n", file_path);
     Matrix* matrix_data = (Matrix*)malloc(sizeof(Matrix));
     if (matrix_data == NULL) {
         fclose(file);
@@ -185,11 +187,23 @@ Matrix* mul(const Matrix* left, const Matrix* right) {
 int det(const Matrix* matrix_data, double* value) {
     if (value == NULL || matrix_data == NULL)
         return -1;
+    /*for (size_t i = 0; i < matrix_data->rows; i++) {
+        for (size_t j = 0; j < matrix_data->columns; j++) {
+            printf("%lf ", matrix_data->matrix[i][j]);
+        }
+        puts("\n");
+    }
+    puts("\n"); */
     if (matrix_data->rows == 2) {
-        *value = matrix_data->matrix[1][0]*matrix_data->matrix[1][1] \
-        - matrix_data->matrix[0][1]*matrix_data->matrix[1][0];
+        *value = matrix_data->matrix[0][0]*matrix_data->matrix[1][1] \
+        - matrix_data->matrix[1][0]*matrix_data->matrix[0][1];
         return 0;
     }
+    if (matrix_data->rows == 1) {
+        *value = matrix_data->matrix[0][0];
+        return 0;
+    }
+    double current_value = 0;
     for (size_t j = 0; j < matrix_data->columns; j++) {
         Matrix* decomposition_matrix = create_matrix(matrix_data->rows - 1, matrix_data->columns - 1);
         if (decomposition_matrix == NULL)
@@ -198,23 +212,80 @@ int det(const Matrix* matrix_data, double* value) {
         decomposition_matrix->columns = matrix_data->columns - 1;
         for (size_t k = 1; k < matrix_data->rows; k++) {  // Создание матрицы для рекурсии
             size_t m = 0;
-            for (size_t l = 0; l < matrix_data->rows; l++) {
+            for (size_t l = 0; l < matrix_data->columns; l++) {
                 if (l == j)
                     continue;
                 decomposition_matrix->matrix[k-1][m++] = matrix_data->matrix[k][l];
+                // printf("%lf ", decomposition_matrix->matrix[k-1][m++]);
             }
+           // puts("\n\n");
         }
         if (det(decomposition_matrix, value) != 0)
             return -1;
-        if (j % 2 == 0)
-            *value += matrix_data->matrix[0][j] * *value;
-        else
-            *value -= matrix_data->matrix[0][j] * *value;
+        current_value += pow(-1, j) * matrix_data->matrix[0][j] * *value;
         free_matrix(decomposition_matrix);
+        // printf("\n%lf\n%lf\n", matrix_data->matrix[0][j], *value);
     }
+    *value = current_value;
     return 0;
 }
 
-Matrix* adj(const Matrix* matrix) {return (Matrix*)matrix;}  // Заглушки для пока не используемых функций
+Matrix* adj(const Matrix* matrix_data) {
+    if (matrix_data == NULL)
+        return NULL;
+    Matrix* transposed_matrix = transp(matrix_data);
+    if (transposed_matrix == NULL)
+        return NULL;
+    Matrix* adjugate_matrix = create_matrix(matrix_data->rows, matrix_data->columns);
+    if (adjugate_matrix == NULL) {
+        free_matrix(transposed_matrix);
+        return NULL;
+    }
+    for (size_t i = 0; i < adjugate_matrix->rows; i++) {  // Два цикла для заполнения
+        for (size_t j = 0; j < adjugate_matrix->columns; j++) {  // дополнительной матрицы
+            Matrix* cofactor_matrix = create_matrix(transposed_matrix->rows - 1, \
+            transposed_matrix->columns - 1);
+            if (cofactor_matrix == NULL) {
+                free_matrix(adjugate_matrix);
+                free_matrix(transposed_matrix);
+                return NULL;
+            }
+            size_t m = 0;
+            for (size_t k = 0; k < transposed_matrix->rows; k++) {  // Два цикла для перебора
+                size_t n = 0;
+                for (size_t l = 0; l < transposed_matrix->columns; l++) {  // транспонированной матрицы
+                    if (k == i || l == j) {
+                        continue;
+                    }
+                    cofactor_matrix->matrix[m][n++] = transposed_matrix->matrix[k][l];
+                    // printf("%lf ", cofactor_matrix->matrix[m][n]);
+                    // n++;
+                    /*printf("%lf\n", cofactor_matrix->matrix[m][n]);
+                    for (size_t i = 0; i < cofactor_matrix->rows; i++) {
+                        for (size_t j = 0; j < cofactor_matrix->columns; j++) {
+                            printf("%lf ", cofactor_matrix->matrix[i][j]);
+                            printf(" %zu %zu   ", i, j);
+                        }
+                        puts("\n");
+                    }
+                    puts("\n");*/
+                }
+                // puts("\n");
+                if (k != i)
+                    m++;
+            }
+            double minor = 0;
+            if (det(cofactor_matrix, &minor) != 0) {
+                free_matrix(transposed_matrix);
+                free_matrix(cofactor_matrix);
+                return NULL;
+            }
+            adjugate_matrix->matrix[i][j] = pow(-1, i + j)*minor;
+            free_matrix(cofactor_matrix);
+        }
+    }
+    free_matrix(transposed_matrix);
+    return (Matrix*)adjugate_matrix;
+}
 
 Matrix* inv(const Matrix* matrix) {return (Matrix*)matrix;}

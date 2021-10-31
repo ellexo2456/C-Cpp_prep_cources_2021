@@ -33,7 +33,7 @@ Matrix* mul(const Matrix* left, const Matrix* right);
 
 // Extra operations
 int det(const Matrix* matrix_data, double* value);
-Matrix* adj(const Matrix* matrix);
+Matrix* adj(const Matrix* matrix_data);
 Matrix* inv(const Matrix* matrix);
 
 #endif  // PROJECT_INCLUDE_MATRIX_H_
