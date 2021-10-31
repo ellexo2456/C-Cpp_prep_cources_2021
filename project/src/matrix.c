@@ -292,5 +292,8 @@ Matrix* adj(const Matrix* matrix_data) {
 
 Matrix* inv(const Matrix* matrix_data) {
     double determinant = 0;
-    return mul_scalar(adj(matrix_data), pow(determinant, -1));
+    if ((det(matrix_data, &determinant) != 0) || matrix_data->columns != matrix_data->rows) {
+        return NULL;
+    }
+    return mul_scalar(adj(matrix_data), 1 / determinant);
 }
