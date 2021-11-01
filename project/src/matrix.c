@@ -10,40 +10,50 @@ Matrix* create_matrix_from_file(const char* file_path) {
         puts("\nError: no such file\n");
         return NULL;
     }
-    Matrix* matrix_data = (Matrix*)malloc(sizeof(Matrix));
-    if (!matrix_data) {
+    Matrix* matrix = (Matrix*)malloc(sizeof(Matrix));
+    if (!matrix) {
         puts("\nError: memory`s run out\n");
         fclose(file);
         return NULL;
     }
-    fscanf(file, "%zu%zu", &matrix_data->rows, &matrix_data->columns);
-    if (!matrix_data->rows || !matrix_data->columns) {  // Чтобы не выделить 0 через malloc
+    if (fscanf(file, "%zu%zu", &matrix->rows, &matrix->columns) != 2) {
+        puts("\nError: incorrect count of arguments\n");
+        free(matrix);
+        fclose(file);
+        return NULL;
+    }
+    if (!matrix->rows || !matrix->columns) {  // Чтобы не выделить 0 через malloc
         puts("\nError: zero count of rows or columns\n");
-        free(matrix_data);
+        free(matrix);
         fclose(file);
         return NULL;
     }
-    matrix_data->matrix = (double**)malloc(matrix_data->rows*sizeof(double*));
-    if (!matrix_data->matrix) {
+    matrix->values = (double**)malloc(matrix->rows*sizeof(double*));
+    if (!matrix->values) {
         puts("\nError: memory`s run out\n");
-        free(matrix_data);
+        free(matrix);
         fclose(file);
         return NULL;
     }
-    for (size_t i = 0; i < matrix_data->rows; i++) {
-        matrix_data->matrix[i] = (double*)malloc(matrix_data->columns*sizeof(double));
-        if (!matrix_data->matrix[i]) {
+    for (size_t i = 0; i < matrix->rows; ++i) {
+        matrix->values[i] = (double*)malloc(matrix->columns*sizeof(double));
+        if (!matrix->values[i]) {
             puts("\nError: memory`s run out\n");
-            matrix_data->rows = i;
-            free_matrix(matrix_data);  // Удаление всего выделенного до массива matrix_data->matrix[i]
+            matrix->rows = i;
+            free_matrix(matrix);  // Удаление всего выделенного до массива matrix->values[i]
             fclose(file);
             return NULL;
         }
-        for (size_t j = 0; j < matrix_data->columns; j++)
-            fscanf(file, "%lf", &matrix_data->matrix[i][j]);
+        for (size_t j = 0; j < matrix->columns; ++j)
+            if (fscanf(file, "%lf", &matrix->values[i][j]) != 1) {
+                puts("\nError: incorrect count of arguments\n");
+                free_matrix(matrix);
+                fclose(file);
+                return NULL;
+            }
     }
     fclose(file);
-    return matrix_data;
+    return matrix;
 }
 
 Matrix* create_matrix(size_t rows, size_t columns) {
@@ -51,280 +61,287 @@ Matrix* create_matrix(size_t rows, size_t columns) {
         puts("\nError: zero count of rows or columns\n");
         return NULL;
     }
-    Matrix* matrix_data = (Matrix*)malloc(sizeof(Matrix));
-    if (!matrix_data) {
+    Matrix* matrix = (Matrix*)malloc(sizeof(Matrix));
+    if (!matrix) {
         puts("\nError: memory`s run out\n");
         return NULL;
     }
-    matrix_data->rows = rows;
-    matrix_data->columns = columns;
-    matrix_data->matrix = (double**)malloc(matrix_data->rows * sizeof(double*));
-    if (!matrix_data->matrix) {
+    matrix->rows = rows;
+    matrix->columns = columns;
+    matrix->values = (double**)malloc(matrix->rows * sizeof(double*));
+    if (!matrix->values) {
             puts("\nError: memory`s run out\n");
-            free(matrix_data);
+            free(matrix);
             return NULL;
     }
-    for (size_t i = 0; i < matrix_data->rows; i++) {
-        matrix_data->matrix[i] = (double*)calloc(matrix_data->columns, sizeof(double));
-        if (!matrix_data->matrix[i]) {
+    for (size_t i = 0; i < matrix->rows; ++i) {
+        matrix->values[i] = (double*)calloc(matrix->columns, sizeof(double));
+        if (!matrix->values[i]) {
             puts("\nError: memory`s run out\n");
-            matrix_data->rows = i;
-            free_matrix(matrix_data);
+            matrix->rows = i;
+            free_matrix(matrix);
             return NULL;
         }
     }
-    return matrix_data;
+    return matrix;
 }
 
-void free_matrix(Matrix* matrix_data) {
-    if (!matrix_data) {
+void free_matrix(Matrix* matrix) {
+    if (!matrix) {
         puts("\nError: can`t free memory because of NULL pointer\n");
         return;
     }
-    for (size_t i = 0; i < matrix_data->rows; i++)
-        free(matrix_data->matrix[i]);
-    free(matrix_data->matrix);
-    free(matrix_data);
+    for (size_t i = 0; i < matrix->rows; ++i) {
+        free(matrix->values[i]);
+    }
+    free(matrix->values);
+    free(matrix);
 }
 
-int get_rows(const Matrix* matrix_data, size_t* rows) {
-    if (rows && matrix_data) {
-        *rows = matrix_data->rows;
+int get_rows(const Matrix* matrix, size_t* rows) {
+    if (rows && matrix) {
+        *rows = matrix->rows;
         return 0;
     }
     return -1;
 }
 
-int get_cols(const Matrix* matrix_data, size_t* columns) {
-    if (columns && matrix_data) {
-        *columns = matrix_data->columns;
+int get_cols(const Matrix* matrix, size_t* columns) {
+    if (columns && matrix) {
+        *columns = matrix->columns;
         return 0;
     }
     return -1;
 }
 
-int get_elem(const Matrix* matrix_data, size_t row, size_t column, double* value) {
-    if (value && matrix_data && row <= matrix_data->rows && column <= matrix_data->columns) {
-        *value = matrix_data->matrix[row][column];
+int get_elem(const Matrix* matrix, size_t row, size_t column, double* value) {
+    if (value && matrix && row <= matrix->rows && column <= matrix->columns) {
+        *value = matrix->values[row][column];
         return 0;
     }
     return -1;
 }
 
-int set_elem(Matrix* matrix_data, size_t row, size_t column, double value) {
-    if (matrix_data && row <= matrix_data->rows && column <= matrix_data->columns) {
-        matrix_data->matrix[row][column] = value;
+int set_elem(Matrix* matrix, size_t row, size_t column, double value) {
+    if (matrix && row <= matrix->rows && column <= matrix->columns) {
+        matrix->values[row][column] = value;
         return 0;
     }
     return -1;
 }
 
-Matrix* mul_scalar(const Matrix* matrix_data, double multiplier) {
-    if (!matrix_data) {
+Matrix* mul_scalar(const Matrix* matrix, double multiplier) {
+    if (!matrix) {
         puts("\nError: null pointer\n");
         return NULL;
     }
-    Matrix* calculated_matrix_data = create_matrix(matrix_data->rows, matrix_data->columns);
-    if (!calculated_matrix_data) {
+    Matrix* calculated_matrix = create_matrix(matrix->rows, matrix->columns);
+    if (!calculated_matrix) {
         puts("\nError: memory`s run out\n");
         return NULL;
     }
-    for (size_t i = 0; i < calculated_matrix_data->rows; i++) {
-        for (size_t j = 0; j < calculated_matrix_data->columns; j++) {
-            calculated_matrix_data->matrix[i][j] = matrix_data->matrix[i][j] * multiplier;
+    for (size_t i = 0; i < calculated_matrix->rows; ++i) {
+        for (size_t j = 0; j < calculated_matrix->columns; ++j) {
+            calculated_matrix->values[i][j] = matrix->values[i][j] * multiplier;
         }
     }
-        return calculated_matrix_data;
+    return calculated_matrix;
 }
 
-Matrix* transp(const Matrix* old_matrix_data) {
-    if (!old_matrix_data) {
+Matrix* transp(const Matrix* old_matrix) {
+    if (!old_matrix) {
         puts("\nError: null pointer\n");
         return NULL;
     }
-    Matrix* transposed_matrix_data = create_matrix(old_matrix_data->columns, old_matrix_data->rows);
-    if (!transposed_matrix_data) {
+    Matrix* transposed_matrix = create_matrix(old_matrix->columns, old_matrix->rows);
+    if (!transposed_matrix) {
         puts("\nError: memory`s run out\n");
         return NULL;
     }
-    for (size_t i = 0; i < transposed_matrix_data->rows; i++) {
-        for (size_t j = 0; j < transposed_matrix_data->columns; j++) {
-                transposed_matrix_data->matrix[i][j] = old_matrix_data->matrix[j][i];
+    for (size_t i = 0; i < transposed_matrix->rows; ++i) {
+        for (size_t j = 0; j < transposed_matrix->columns; ++j) {
+                transposed_matrix->values[i][j] = old_matrix->values[j][i];
         }
     }
-    return transposed_matrix_data;
+    return transposed_matrix;
 }
 
-Matrix* sum(const Matrix* left_matrix_data, const Matrix* right_matrix_data) {
-    if (!left_matrix_data || !right_matrix_data || left_matrix_data->rows != right_matrix_data->rows \
-    || left_matrix_data->columns != right_matrix_data->columns) {
+Matrix* sum(const Matrix* left_matrix, const Matrix* right_matrix) {
+    if (!left_matrix || !right_matrix || left_matrix->rows != right_matrix->rows \
+    || left_matrix->columns != right_matrix->columns) {
         puts("\nError: incorrect data\n");
         return NULL;
     }
-    Matrix* calculated_matrix_data = create_matrix(left_matrix_data->rows, left_matrix_data->columns);
-    if (!calculated_matrix_data) {
+    Matrix* calculated_matrix = create_matrix(left_matrix->rows, left_matrix->columns);
+    if (!calculated_matrix) {
         puts("\nError: memory`s run out\n");
         return NULL;
     }
-    for (size_t i = 0; i < calculated_matrix_data->rows; i++) {
-        for (size_t j = 0; j < calculated_matrix_data->columns; j++) {
-            calculated_matrix_data->matrix[i][j] = left_matrix_data->matrix[i][j] \
-            + right_matrix_data->matrix[i][j];
+    for (size_t i = 0; i < calculated_matrix->rows; ++i) {
+        for (size_t j = 0; j < calculated_matrix->columns; ++j) {
+            calculated_matrix->values[i][j] = left_matrix->values[i][j] \
+            + right_matrix->values[i][j];
         }
     }
-    return calculated_matrix_data;
+    return calculated_matrix;
 }
 
-Matrix* sub(const Matrix* left_matrix_data, const Matrix* right_matrix_data) {
-    if (!left_matrix_data || !right_matrix_data || left_matrix_data->rows != right_matrix_data->rows \
-    || left_matrix_data->columns != right_matrix_data->columns) {
+Matrix* sub(const Matrix* left_matrix, const Matrix* right_matrix) {
+    if (!left_matrix || !right_matrix) {
         puts("\nError: incorrect data\n");
         return NULL;
     }
-    Matrix* calculated_matrix_data = create_matrix(left_matrix_data->rows, left_matrix_data->columns);
-    if (!calculated_matrix_data) {
-        puts("\nError: memory`s run out\n");
-        return NULL;
-    }
-    for (size_t i = 0; i < calculated_matrix_data->rows; i++) {
-        for (size_t j = 0; j < calculated_matrix_data->columns; j++) {
-            calculated_matrix_data->matrix[i][j] = \
-            left_matrix_data->matrix[i][j] - right_matrix_data->matrix[i][j];
-        }
-    }
-    return calculated_matrix_data;
-}
-
-Matrix* mul(const Matrix* left_matrix_data, const Matrix* right_matrix_data) {
-    if (!left_matrix_data || !right_matrix_data || left_matrix_data->columns != right_matrix_data->rows) {
+    if (left_matrix->rows != right_matrix->rows || left_matrix->columns != right_matrix->columns) {
         puts("\nError: incorrect data\n");
         return NULL;
     }
-    Matrix* calculated_matrix_data = create_matrix(left_matrix_data->rows, \
-    right_matrix_data->columns);  // Размер матрицы B[2][4]*C[4][5]
-    if (!calculated_matrix_data) {                                 // равен [2][5]
+    Matrix* calculated_matrix = create_matrix(left_matrix->rows, left_matrix->columns);
+    if (!calculated_matrix) {
         puts("\nError: memory`s run out\n");
         return NULL;
     }
-    for (size_t i = 0; i < calculated_matrix_data->rows; i++) {  // Последующая система циклов
+    for (size_t i = 0; i < calculated_matrix->rows; ++i) {
+        for (size_t j = 0; j < calculated_matrix->columns; ++j) {
+            calculated_matrix->values[i][j] = \
+            left_matrix->values[i][j] - right_matrix->values[i][j];
+        }
+    }
+    return calculated_matrix;
+}
+
+Matrix* mul(const Matrix* left_matrix, const Matrix* right_matrix) {
+    if (!left_matrix || !right_matrix || left_matrix->columns != right_matrix->rows) {
+        puts("\nError: incorrect data\n");
+        return NULL;
+    }
+    Matrix* calculated_matrix = create_matrix(left_matrix->rows, \
+    right_matrix->columns);
+    if (!calculated_matrix) {
+        puts("\nError: memory`s run out\n");
+        return NULL;
+    }
+    for (size_t i = 0; i < calculated_matrix->rows; ++i) {  // Последующая система циклов
         size_t m = 0;                  // позволяет вычислить каждый элемент произведения
-        for (size_t j = 0; j < calculated_matrix_data->columns; j++) {  // матриц и заполнить
-            for (size_t k = 0; k < left_matrix_data->columns; k++) {    // ими новую матрицу
-                calculated_matrix_data->matrix[i][j] += \
-                (left_matrix_data->matrix[i][k] * right_matrix_data->matrix[k][m]);
+        for (size_t j = 0; j < calculated_matrix->columns; ++j) {  // матриц и заполнить
+            for (size_t k = 0; k < left_matrix->columns; ++k) {    // ими новую матрицу
+                calculated_matrix->values[i][j] += \
+                (left_matrix->values[i][k] * right_matrix->values[k][m]);
             }
             ++m;
         }
     }
-    return calculated_matrix_data;
+    return calculated_matrix;
 }
 
-int det(const Matrix* matrix_data, double* determinant) {
-    if (!determinant || !matrix_data || matrix_data->rows != matrix_data->columns) {
+int det(const Matrix* matrix, double* determinant) {
+    if (!determinant || !matrix || matrix->rows != matrix->columns) {
         puts("\nError: incorrect data\n");
         return -1;
     }
-    if (matrix_data->rows == 2) {
-        *determinant = matrix_data->matrix[0][0]*matrix_data->matrix[1][1] \
-        - matrix_data->matrix[1][0]*matrix_data->matrix[0][1];
+    if (matrix->rows == 2) {
+        *determinant = matrix->values[0][0]*matrix->values[1][1] \
+        - matrix->values[1][0]*matrix->values[0][1];
         return 0;
     }
-    if (matrix_data->rows == 1) {
-        *determinant = matrix_data->matrix[0][0];
+    if (matrix->rows == 1) {
+        *determinant = matrix->values[0][0];
         return 0;
     }
     double current_determinant = 0;
-    for (size_t j = 0; j < matrix_data->columns; j++) {
-        Matrix* minor_matrix_data = create_matrix(matrix_data->rows - 1, matrix_data->columns - 1);
-        if (!minor_matrix_data) {
+    for (size_t j = 0; j < matrix->columns; ++j) {
+        Matrix* minor_matrix = create_matrix(matrix->rows - 1, matrix->columns - 1);
+        if (!minor_matrix) {
             puts("\nError: memory`s run out\n");
             return -1;
         }
-        minor_matrix_data->rows = matrix_data->rows - 1;
-        minor_matrix_data->columns = matrix_data->columns - 1;
-        for (size_t k = 1; k < matrix_data->rows; k++) {  // Создание матрицы для
+        minor_matrix->rows = matrix->rows - 1;
+        minor_matrix->columns = matrix->columns - 1;
+        for (size_t k = 1; k < matrix->rows; ++k) {  // Создание матрицы для
             size_t m = 0;                               // рекурсии (алгебраическое дополнение)
-            for (size_t l = 0; l < matrix_data->columns; l++) {
+            for (size_t l = 0; l < matrix->columns; ++l) {
                 if (l == j)
                     continue;
-                minor_matrix_data->matrix[k-1][m++] = matrix_data->matrix[k][l];
+                minor_matrix->values[k-1][m++] = matrix->values[k][l];
             }
         }
-        if (det(minor_matrix_data, determinant) != 0) {
+        if (det(minor_matrix, determinant) != 0) {
             puts("\nError: can`t compute determinant\n");
-            free_matrix(minor_matrix_data);
+            free_matrix(minor_matrix);
             return -1;
         }
-        if (j % 2 == 0)
-            current_determinant += matrix_data->matrix[0][j] * *determinant;
-        else
-            current_determinant += -matrix_data->matrix[0][j] * *determinant;
-        free_matrix(minor_matrix_data);
+        if (j % 2 == 0) {
+            current_determinant += matrix->values[0][j] * *determinant;
+        } else {
+            current_determinant += -matrix->values[0][j] * *determinant;
+        }
+        free_matrix(minor_matrix);
     }
     *determinant = current_determinant;
     return 0;
 }
 
-Matrix* adj(const Matrix* matrix_data) {
-    if (!matrix_data || matrix_data->rows != matrix_data->columns) {
+Matrix* adj(const Matrix* matrix) {
+    if (!matrix || matrix->rows != matrix->columns) {
         puts("\nError: incorrect data\n");
         return NULL;
     }
-    if (matrix_data->rows == 1)
-        return (Matrix*)matrix_data;
-    Matrix* transposed_matrix_data = transp(matrix_data);
-    if (!transposed_matrix_data) {
+    if (matrix->rows == 1) {
+        return (Matrix*)matrix;
+    }
+    Matrix* transposed_matrix = transp(matrix);
+    if (!transposed_matrix) {
         puts("\nError: memory`s run out\n");
         return NULL;
     }
-    Matrix* adjugate_matrix_data = create_matrix(matrix_data->rows, matrix_data->columns);
-    if (!adjugate_matrix_data) {
+    Matrix* adjugate_matrix = create_matrix(matrix->rows, matrix->columns);
+    if (!adjugate_matrix) {
         puts("\nError: memory`s run out\n");
-        free_matrix(transposed_matrix_data);
+        free_matrix(transposed_matrix);
         return NULL;
     }
-    for (size_t i = 0; i < adjugate_matrix_data->rows; i++) {  // Два цикла для заполнения
-        for (size_t j = 0; j < adjugate_matrix_data->columns; j++) {  // дополнительной матрицы
-            Matrix* minor_matrix_data = create_matrix(transposed_matrix_data->rows - 1,
-            transposed_matrix_data->columns - 1);
-            if (!minor_matrix_data) {
+    for (size_t i = 0; i < adjugate_matrix->rows; ++i) {  // Два цикла для заполнения
+        for (size_t j = 0; j < adjugate_matrix->columns; ++j) {  // дополнительной матрицы
+            Matrix* minor_matrix = create_matrix(transposed_matrix->rows - 1,
+            transposed_matrix->columns - 1);
+            if (!minor_matrix) {
                 puts("\nError: memory`s run out\n");
-                free_matrix(adjugate_matrix_data);
-                free_matrix(transposed_matrix_data);
+                free_matrix(adjugate_matrix);
+                free_matrix(transposed_matrix);
                 return NULL;
             }
             size_t m = 0;  // Счётчик для заполнения минора
-            for (size_t k = 0; k < transposed_matrix_data->rows; k++) {  // Два цикла для перебора
+            for (size_t k = 0; k < transposed_matrix->rows; ++k) {  // Два цикла для перебора
                 size_t n = 0;  // Счётчик для заполнения минора
-                for (size_t l = 0; l < transposed_matrix_data->columns; l++) {  // транспонированной матрицы
+                for (size_t l = 0; l < transposed_matrix->columns; ++l) {  // транспонированной матрицы
                     if (k == i || l == j) {
                         continue;
                     }
-                    minor_matrix_data->matrix[m][n++] = transposed_matrix_data->matrix[k][l];
+                    minor_matrix->values[m][n++] = transposed_matrix->values[k][l];
                 }
-                if (k != i)
-                    m++;
+                if (k != i) {
+                    ++m;
+                }
             }
             double minor = 0;
-            if (det(minor_matrix_data, &minor) != 0) {
+            if (det(minor_matrix, &minor) != 0) {
                 puts("\nError: can`t compute determinant\n");
-                free_matrix(minor_matrix_data);
-                free_matrix(adjugate_matrix_data);
-                free_matrix(transposed_matrix_data);
+                free_matrix(minor_matrix);
+                free_matrix(adjugate_matrix);
+                free_matrix(transposed_matrix);
                 return NULL;
             }
-            adjugate_matrix_data->matrix[i][j] = pow(-1, i + j)*minor;
-            free_matrix(minor_matrix_data);
+            adjugate_matrix->values[i][j] = pow(-1, i + j)*minor;
+            free_matrix(minor_matrix);
         }
     }
-    free_matrix(transposed_matrix_data);
-    return (Matrix*)adjugate_matrix_data;
+    free_matrix(transposed_matrix);
+    return (Matrix*)adjugate_matrix;
 }
 
-Matrix* inv(const Matrix* matrix_data) {
+Matrix* inv(const Matrix* matrix) {
     double determinant = 0;
-    if (det(matrix_data, &determinant))
+    if (det(matrix, &determinant)) {
         return NULL;
-    return mul_scalar(adj(matrix_data), 1 / (determinant*determinant));
+    }
+    return mul_scalar(adj(matrix), 1 / (determinant*determinant));
 }
-

@@ -7,7 +7,7 @@
 typedef struct {
     size_t rows;
     size_t columns;
-    double **matrix;
+    double **values;
 } Matrix;
 
 
@@ -15,25 +15,25 @@ typedef struct {
 // Init/release operations
 Matrix* create_matrix_from_file(const char* file_path);
 Matrix* create_matrix(size_t rows, size_t columns);
-void free_matrix(Matrix* matrix_data);
+void free_matrix(Matrix* matrix);
 
 // Basic operations
-int get_rows(const Matrix* matrix_data, size_t* rows);
-int get_cols(const Matrix* matrix_data, size_t* columns);
-int get_elem(const Matrix* matrix_data, size_t row, size_t column, double* value);
-int set_elem(Matrix* matrix_data, size_t row, size_t column, double value);
+int get_rows(const Matrix* matrix, size_t* rows);
+int get_cols(const Matrix* matrix, size_t* columns);
+int get_elem(const Matrix* matrix, size_t row, size_t column, double* value);
+int set_elem(Matrix* matrix, size_t row, size_t column, double value);
 
 // Math operations
-Matrix* mul_scalar(const Matrix* matrix_data, double multiplier);
-Matrix* transp(const Matrix* old_matrix_data);
+Matrix* mul_scalar(const Matrix* matrix, double multiplier);
+Matrix* transp(const Matrix* old_matrix);
 
-Matrix* sum(const Matrix* left_matrix_data, const Matrix* right_matrix_data);
-Matrix* sub(const Matrix* left_matrix_data, const Matrix* right_matrix_data);
-Matrix* mul(const Matrix* left_matrix_data, const Matrix* right_matrix_data);
+Matrix* sum(const Matrix* left_matrix, const Matrix* right_matrix);
+Matrix* sub(const Matrix* left_matrix, const Matrix* right_matrix);
+Matrix* mul(const Matrix* left_matrix, const Matrix* right_matrix);
 
 // Extra operations
-int det(const Matrix* matrix_data, double* determinant);
-Matrix* adj(const Matrix* matrix_data);
-Matrix* inv(const Matrix* matrix_data);
+int det(const Matrix* matrix, double* determinant);
+Matrix* adj(const Matrix* matrix);
+Matrix* inv(const Matrix* matrix);
 
 #endif  // PROJECT_INCLUDE_MATRIX_H_
