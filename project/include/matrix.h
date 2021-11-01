@@ -24,15 +24,15 @@ int get_elem(const Matrix* matrix_data, size_t row, size_t column, double* value
 int set_elem(Matrix* matrix_data, size_t row, size_t column, double value);
 
 // Math operations
-Matrix* mul_scalar(const Matrix* matrix_data, double value);
-Matrix* transp(const Matrix* old_matrix);
+Matrix* mul_scalar(const Matrix* matrix_data, double multiplier);
+Matrix* transp(const Matrix* old_matrix_data);
 
-Matrix* sum(const Matrix* left, const Matrix* right);
-Matrix* sub(const Matrix* left, const Matrix* right);
-Matrix* mul(const Matrix* left, const Matrix* right);
+Matrix* sum(const Matrix* left_matrix_data, const Matrix* right_matrix_data);
+Matrix* sub(const Matrix* left_matrix_data, const Matrix* right_matrix_data);
+Matrix* mul(const Matrix* left_matrix_data, const Matrix* right_matrix_data);
 
 // Extra operations
-int det(const Matrix* matrix_data, double* value);
+int det(const Matrix* matrix_data, double* determinant);
 Matrix* adj(const Matrix* matrix_data);
 Matrix* inv(const Matrix* matrix_data);
 
