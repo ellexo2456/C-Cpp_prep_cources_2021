@@ -285,9 +285,6 @@ Matrix* adj(const Matrix* matrix) {
         puts("\nError: incorrect data\n");
         return NULL;
     }
-    if (matrix->rows == 1) {
-        return (Matrix*)matrix;
-    }
     Matrix* transposed_matrix = transp(matrix);
     if (!transposed_matrix) {
         puts("\nError: memory`s run out\n");
@@ -298,6 +295,11 @@ Matrix* adj(const Matrix* matrix) {
         puts("\nError: memory`s run out\n");
         free_matrix(transposed_matrix);
         return NULL;
+    }
+    if (matrix->rows == 1) {
+        adjugate_matrix->values[0][0] = 1;
+        free_matrix(transposed_matrix);
+        return adjugate_matrix;
     }
     for (size_t i = 0; i < adjugate_matrix->rows; ++i) {  // Два цикла для заполнения
         for (size_t j = 0; j < adjugate_matrix->columns; ++j) {  // дополнительной матрицы
@@ -323,7 +325,7 @@ Matrix* adj(const Matrix* matrix) {
                 }
             }
             double minor = 0;
-            if (det(minor_matrix, &minor) != 0) {
+            if (det(minor_matrix, &minor) || double_equality(minor, 0.)) {
                 puts("\nError: can`t compute determinant\n");
                 free_matrix(minor_matrix);
                 free_matrix(adjugate_matrix);
@@ -339,9 +341,29 @@ Matrix* adj(const Matrix* matrix) {
 }
 
 Matrix* inv(const Matrix* matrix) {
-    double determinant = 0;
-    if (det(matrix, &determinant)) {
+    if (!matrix) {
+        puts("\nError: null pointer\n");
         return NULL;
     }
-    return mul_scalar(adj(matrix), 1 / (determinant*determinant));
+    double determinant = 0;
+    if (det(matrix, &determinant) || double_equality(determinant, 0.)) {  // Проверка
+        puts("\nError: can`t compute inverse matrix\n");  // на квадратность пройдёт внутри det()
+        return NULL;
+    }
+    Matrix* adjugate_matrix = adj(matrix);
+    if (!adjugate_matrix) {
+        puts("\nError: can`t compute inverse matrix\n");
+        return NULL;
+    }
+    Matrix* inverse_matrix = mul_scalar(adjugate_matrix, 1 / determinant);
+    free_matrix(adjugate_matrix);
+    if (!inverse_matrix) {
+        puts("\nError: can`t compute inverse matrix\n");
+        return NULL;
+    }
+    return inverse_matrix;
+}
+
+int double_equality(double left, double right) {
+    return fabs(left - right) < 1e-15;
 }
