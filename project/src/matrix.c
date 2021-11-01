@@ -212,12 +212,10 @@ Matrix* mul(const Matrix* left_matrix_data, const Matrix* right_matrix_data) {
             for (size_t k = 0; k < left_matrix_data->columns; k++) {    // ими новую матрицу
                 calculated_matrix_data->matrix[i][j] += \
                 (left_matrix_data->matrix[i][k] * right_matrix_data->matrix[k][m]);
-                printf("\n%lf\n", left_matrix_data->matrix[i][k] * right_matrix_data->matrix[k][m]);
             }
             ++m;
         }
     }
-    printf("\n%lf\n", calculated_matrix_data->matrix[0][0]);
     return calculated_matrix_data;
 }
 
@@ -329,3 +327,4 @@ Matrix* inv(const Matrix* matrix_data) {
         return NULL;
     return mul_scalar(adj(matrix_data), 1 / (determinant*determinant));
 }
+
