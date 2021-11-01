@@ -325,7 +325,7 @@ Matrix* adj(const Matrix* matrix) {
                 }
             }
             double minor = 0;
-            if (det(minor_matrix, &minor) || double_equality(minor, 0.)) {
+            if (det(minor_matrix, &minor)) {
                 puts("\nError: can`t compute determinant\n");
                 free_matrix(minor_matrix);
                 free_matrix(adjugate_matrix);
@@ -346,7 +346,7 @@ Matrix* inv(const Matrix* matrix) {
         return NULL;
     }
     double determinant = 0;
-    if (det(matrix, &determinant) || double_equality(determinant, 0.)) {  // Проверка
+    if (det(matrix, &determinant) || fabs(determinant) < 1e-15) {  // Проверка
         puts("\nError: can`t compute inverse matrix\n");  // на квадратность пройдёт внутри det()
         return NULL;
     }
@@ -362,8 +362,4 @@ Matrix* inv(const Matrix* matrix) {
         return NULL;
     }
     return inverse_matrix;
-}
-
-int double_equality(double left, double right) {
-    return fabs(left - right) < 1e-15;
 }

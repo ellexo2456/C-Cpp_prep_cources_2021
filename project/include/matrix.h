@@ -11,8 +11,6 @@ typedef struct {
 } Matrix;
 
 
-int double_equality(double, double);
-
 
 // Init/release operations
 Matrix* create_matrix_from_file(const char* file_path);
