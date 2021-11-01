@@ -1,15 +1,19 @@
-#include <stdio.h>
 #include <math.h>
+#include <stdio.h>
+
 #include "is_prime.h"
 
-int is_prime(int num) {
-    if (num <= 1) {
+
+int is_prime(int number) {
+    if (number <= 1) {
         return 0;
-    } else {
-        for (int i = 2; i <= sqrt(num); ++i) {  // Поиск делителей введённого числа
-            if (num % i == 0)                   // Для ускорение цикл до корня из числа
-                return 0;
+    }
+    int flag = 1;
+    for (int delimiter = 2; delimiter*delimiter <= number; ++delimiter) {
+        if (number % delimiter == 0) {
+            flag = 0;
+            break;
         }
     }
-    return 1;
+    return flag;
 }

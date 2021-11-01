@@ -1,13 +1,18 @@
-#include "custom_pow.h"
 #include <stdio.h>
 
+#include "custom_pow.h"
+
+
 int custom_pow(int base, int pow) {
-    int const start_number = base;
-    if (pow > 0) {
-        for (int i = 1; i < pow; ++i) {
+    const int start_number = base;
+    if (pow < 0) {
+        return 0;
+    }
+    if (!pow) {
+        return 1;
+    }
+    for (int i = 1; i < pow; ++i) {
             base *= start_number;
         }
         return base;
-    }
-    return 1;
 }
