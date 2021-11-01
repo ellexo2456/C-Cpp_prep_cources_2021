@@ -209,12 +209,15 @@ Matrix* mul(const Matrix* left_matrix_data, const Matrix* right_matrix_data) {
     for (size_t i = 0; i < calculated_matrix_data->rows; i++) {  // Последующая система циклов
         size_t m = 0;                  // позволяет вычислить каждый элемент произведения
         for (size_t j = 0; j < calculated_matrix_data->columns; j++) {  // матриц и заполнить
-            for (size_t k = 0; k < left_matrix_data->columns; k++)      // ими новую матрицу
+            for (size_t k = 0; k < left_matrix_data->columns; k++) {    // ими новую матрицу
                 calculated_matrix_data->matrix[i][j] += \
                 (left_matrix_data->matrix[i][k] * right_matrix_data->matrix[k][m]);
+                printf("\n%lf\n", left_matrix_data->matrix[i][k] * right_matrix_data->matrix[k][m]);
+            }
             ++m;
         }
     }
+    printf("\n%lf\n", calculated_matrix_data->matrix[0][0]);
     return calculated_matrix_data;
 }
 
