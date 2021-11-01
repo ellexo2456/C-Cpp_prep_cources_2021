@@ -76,7 +76,6 @@ static void _test_arith(const char *left, const char *right, const char *result,
 
     Matrix *result_matrix = test_func(left_matrix, right_matrix);
     assert_matrix_equal(expected_matrix, result_matrix, eps_base);
-
     free_matrix(left_matrix);
     free_matrix(right_matrix);
     free_matrix(expected_matrix);

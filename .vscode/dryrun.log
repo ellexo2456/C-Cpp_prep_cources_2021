@@ -1,9 +1,0 @@
-make --dry-run --always-make --keep-going --print-directory
-make: Entering directory '/home/alexey/First'
-rm -rf ./main.out
-./linters/run.sh
-cc -Wpedantic -Wall -Wextra -Werror -I project/include -o ./main.out  project/src/main.c project/src/add_client_data.c project/src/add_transaction_data.c project/src/update_credit_limit.c 
-./btests/run.sh ./main.out
-./btests/run.sh ./main.out --memcheck
-make: Leaving directory '/home/alexey/First'
- 
