@@ -14,7 +14,7 @@ void print_sequence(int end_of_sequence) {
         print_sequence(end_of_sequence - 1);
         printf(" %i", end_of_sequence);
     }
-    if (end_of_sequence < 1){
+    if (end_of_sequence < 1) {
         print_sequence(end_of_sequence + 1);
         printf(" %i", end_of_sequence);
     }
