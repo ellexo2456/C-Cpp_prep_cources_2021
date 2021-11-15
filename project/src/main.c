@@ -1,7 +1,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-#include "email_parser.h"
+#include "/home/alexey/First/project/include/email_parser.h"
 
 int main(int argc, const char **argv) {
     if (argc != 2) {
@@ -11,6 +11,8 @@ int main(int argc, const char **argv) {
     if (email_parser(path_to_email) == -1) {
         puts("\nERROR");
     }
-    puts("SUCCESS");
+    else {
+        puts("SUCCESS");
+    }
     return 0;
 }

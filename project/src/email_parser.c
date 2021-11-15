@@ -1,5 +1,6 @@
 #include <ctype.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 
 typedef enum {
@@ -20,7 +21,7 @@ typedef enum {
     LEXEM_END_SEARCHING,
 } lexem_type;
 
-typedef int (*action_type)(const char *start, const char **end, FILE *email);
+typedef int (*action_type)(char *start, FILE *email);
 
 typedef struct {
     state_type new_state;
@@ -29,23 +30,38 @@ typedef struct {
 
 int email_parser(const char *path_to_email);
 
+char *strndup(const char *s, size_t n);
 int check_line_count(FILE *email);
 void cut_space(char **current);
 void cut_line_breaker(char *start);
-int print_value(char *start, const char **end, FILE *email);
+int print_value(char *start, FILE *email);
 int is_boudary(char *line);
-const char *is_multipart(char *start, const int line_count, FILE *email);
+char *is_multipart(char *start, const int line_count, FILE *email);
 void cut_qoutes_or_line_breaker(char *start);
-const int compute_part_count(boundary, email);
+int compute_part_count(char *boundary, FILE *email);
 int print_part_count(char *start, FILE *email);
-lexem_type check_header_end(start);
-lexem_type get_lexem(const char *initial_string, const char *start, char **end, lexem_type *searching_lexem_pointer);
+lexem_type check_header_end(char *start);
+lexem_type get_lexem(const char *initial_string, char *start, char **end, lexem_type *searching_lexem_pointer);
 
 static rule_type syntax[STATE_COUNT][LEXEM_COUNT] = {
 //		            LEXEM_FROM_COLON, 	        LEXEM_TO_COLON,            LEXEM_DATE_COLON,            LEXEM_CONTENT_TYPE_COLON, 	   	   LEXEM_SKIP, 	                     LEXEM_HEADER_END
 /*STATE_HEADER*/	{{STATE_VALUE, NULL},	    {STATE_VALUE, NULL},       {STATE_VALUE, NULL},        	{STATE_VALUE, NULL},           	   {STATE_HEADER, NULL},   	         {STATE_HEADER, NULL}},
 /*STATE_VALUE*/	    {{STATE_ERROR, NULL},	    {STATE_ERROR, NULL},       {STATE_ERROR, NULL},         {STATE_ERROR, NULL},	           {STATE_HEADER, print_value},      {STATE_ERROR, NULL}},
 };
+
+char *strndup(const char *s, size_t n) {
+    char *p;
+    size_t n1;
+
+    for (n1 = 0; n1 < n && s[n1] != '\0'; n1++)
+        continue;
+    p = malloc(n + 1);
+    if (p != NULL) {
+        memcpy(p, s, n1);
+        p[n1] = '\0';
+    }
+    return p;
+}
 
 int check_line_count(FILE *email) {
     int counter = 0;
@@ -82,7 +98,7 @@ void cut_line_breaker(char *start) {
     }
 }
 
-int print_value(char *start, const char **end, FILE *email) {
+int print_value(char *start, FILE *email) {
     char *pointer_to_string[] = {start};
     cut_space(pointer_to_string);
     cut_line_breaker(start);
@@ -124,7 +140,7 @@ int is_boudary(char *line) {
         && tolower(line[4]) == 'd' && tolower(line[5]) == 'a' && tolower(line[6]) == 'r' && tolower(line[7]) == 'y' && line[8] == '=';
 }
 
-const char *is_multipart(char *start, const int line_count, FILE *email) {
+char *is_multipart(char *start, const int line_count, FILE *email) {
     FILE *start_point = email;
     char *boundary = NULL;
     for (; *start; ++start) {
@@ -137,12 +153,12 @@ const char *is_multipart(char *start, const int line_count, FILE *email) {
         char line[100];
         if (!fgets(line, 100, start_point)) {
             if (ferror(start_point)) {
-                perror("*/*print_value ERROR*/*");
+                perror("*/*is_boudary ERROR*/*");
                 fclose(start_point);
-                return -1;
+                break;
             }
-            puts("print_value: File reading`s done");
-            return -1;
+            puts("is_boudary File reading`s done");
+            break;
         }
         for (; *start; ++start) {
             if (is_boudary(start)) {
@@ -151,7 +167,10 @@ const char *is_multipart(char *start, const int line_count, FILE *email) {
         }
         ++i;
     }
-    return strdup(boundary);
+    if (!boundary) {
+        return NULL;
+    }
+    return strndup(boundary, strlen(boundary));
 }
 
 void cut_qoutes_or_line_breaker(char *start) {
@@ -164,7 +183,7 @@ void cut_qoutes_or_line_breaker(char *start) {
     }
 }
 
-const int compute_part_count(boundary, email) {
+int compute_part_count(char *boundary, FILE *email) {
     boundary += sizeof("boundary=") - 1;
     if (*boundary == '"') {
         ++boundary;
@@ -200,12 +219,12 @@ int print_part_count(char *start, FILE *email) {
     if (line_count == -1) {
         return -1;
     }
-    const char *boundary = is_multipart(start, line_count, email);
+    char *boundary = is_multipart(start, line_count, email);
     if (!boundary) {
         printf("%s", "1");
         return 1;
     }
-    const int part_count = compute_part_count(boundary, email);
+    int part_count = compute_part_count(boundary, email);
     if (part_count == -1) {
         return -1;
     }
@@ -213,36 +232,37 @@ int print_part_count(char *start, FILE *email) {
     return 1;
 }
 
-lexem_type check_header_end(start) {
-    flag = 1;
+lexem_type check_header_end(char *start) {
+    int flag = 1;
     while (*start && flag) {
         flag = isspace(start);
     }
     if (!flag) {
         return LEXEM_SKIP;
     }
-    return LEXEM_HEADER_END
+    return LEXEM_HEADER_END;
 }
 
-lexem_type get_lexem(const char *initial_string, const char *start, char **end, lexem_type *searching_lexem_pointer) {
+lexem_type get_lexem(const char *initial_string, char *start, char **end, lexem_type *searching_lexem_pointer) {
     if (start == initial_string) {
         switch (*searching_lexem_pointer) {
             case LEXEM_FROM_COLON:
-                if (tolower(start[0]) == 'f' && tolower(start[0]) == 'r' && tolower(start[0]) == 'o' && tolower(start[0]) == 'm' && start[0] == ':')  {
+                if (tolower(start[0]) == 'f' && tolower(start[1]) == 'r' && tolower(start[2]) == 'o' && tolower(start[3]) == 'm' && start[4] == ':')  {
+                    puts("10");
                     *searching_lexem_pointer = LEXEM_TO_COLON;
                     *end = start + 4;
                     return LEXEM_FROM_COLON;
                 }
                 break;
             case LEXEM_TO_COLON:
-                if (tolower(start[0]) == 't' && tolower(start[0]) == 'o' && start[0] == ':') {
+                if (tolower(start[0]) == 't' && tolower(start[1]) == 'o' && start[2] == ':') {
                     *searching_lexem_pointer = LEXEM_DATE_COLON;
                     *end = start + 2;
                     return LEXEM_TO_COLON;
                 }
                 break;
             case LEXEM_DATE_COLON:
-                if (tolower(start[0]) == 'd' && tolower(start[0]) == 'a' && tolower(start[0]) == 't' && tolower(start[0]) == 'e' && start[0] == ':') {
+                if (tolower(start[0]) == 'd' && tolower(start[1]) == 'a' && tolower(start[2]) == 't' && tolower(start[3]) == 'e' && start[4] == ':') {
                     *searching_lexem_pointer = LEXEM_CONTENT_TYPE_COLON;
                     *end = start + 4;
                     return LEXEM_DATE_COLON;
@@ -271,7 +291,7 @@ int email_parser(const char *path_to_email) {
     lexem_type searching_lexem = LEXEM_FROM_COLON;
     FILE *email = fopen(path_to_email, "r");
     if (!email) {
-        perror("*/*ERROR*/*");
+        perror("email_parser: */*ERROR*/*");
         return -1;
     }
     while (searching_lexem != LEXEM_END_SEARCHING) {
@@ -283,11 +303,11 @@ int email_parser(const char *path_to_email) {
                 fclose(email);
                 return -1;
             }
-            puts("File reading`s done");
+            puts("email_parser: File reading`s done");
             return -1;
         }
         while (*start) {
-            char **end;
+            char *end[] = {start};
             lexem_type current_lexem = get_lexem(initial_string, start, end, &searching_lexem);
             rule_type rule = syntax[current_state][current_lexem];
             if (rule.new_state == STATE_ERROR) {
@@ -302,25 +322,26 @@ int email_parser(const char *path_to_email) {
                 return 1;
             }
             if (rule.action != NULL) {
-                if (rule.action(start, end, email) == -1) {
+                if (rule.action(start, email) == -1) {
                     puts("Error with action");
                     fclose(email);
                     return -1;
                 }
             }
-            if (curren_lexem == LEXEM_SKIP) {
+            if (current_lexem == LEXEM_SKIP) {
                 if (current_state == STATE_VALUE) {
                     fseek(email, 0, SEEK_SET);
                 }
                 break;
             }
-            if (curren_lexem == LEXEM_HEADER_END) {
+            if (current_lexem == LEXEM_HEADER_END) {
                 fseek(email, 0, SEEK_SET);
-                ++serching_lexem;
+                ++searching_lexem;
                 break;
             }
             current_state = rule.new_state;
             start = *end;
         }
     }
+    return -1;
 }
