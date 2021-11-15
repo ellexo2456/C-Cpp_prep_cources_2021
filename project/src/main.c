@@ -11,8 +11,5 @@ int main(int argc, const char **argv) {
     if (email_parser(path_to_email) == -1) {
         puts("\nERROR");
     }
-    else {
-        puts("SUCCESS");
-    }
     return 0;
 }
