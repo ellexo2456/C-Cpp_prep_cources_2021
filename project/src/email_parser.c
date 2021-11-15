@@ -23,6 +23,7 @@ typedef enum {
 
 typedef int (*action_type)(char *start, FILE *email);
 
+
 typedef struct {
     state_type new_state;
     action_type action;
@@ -31,10 +32,9 @@ typedef struct {
 int email_parser(const char *path_to_email);
 
 char *strndup(const char *s, size_t n);
-int check_line_length(char *start, FILE *email);
+int check_line_count(FILE start_point);
 void cut_line_breaker(char *start);
 int print_value(char *start, FILE *email);
-int check_line_count(FILE *email);
 int is_boudary(char *line);
 char *is_multipart(char *start, const int line_count, FILE *email);
 void cut_qoutes_or_line_breaker(char *start);
@@ -62,38 +62,29 @@ char *strndup(const char *s, size_t n) {
     }
     return p;
 }
-
-int check_line_length(char *start, FILE *email) {
+int check_line_count(FILE start_point) {
     int counter = 0;
+    char line[100];
     int flag = 1;
-    while (*start) {
-            if (*start == '\r' || *start == '\n') {
-                flag = 0;
-            }
-            ++start;
-        }
-    ++counter;
-    FILE *start_point = email;
-    while (flag) {
-        char initial_string[100];
-        char *line = fgets(initial_string, 100, start_point);
-        if (!line) {
-            if (ferror(start_point)) {
-                perror("*/*ERROR*/*");
-                fclose(email);
+    do {
+        if (!fgets(line, 100, &start_point)) {
+            if (ferror(&start_point)) {
+                perror("*/*check_line_count ERROR*/*");
+                fclose(&start_point);
                 return -1;
             }
-            puts("email_parser: File reading`s done");
+            puts("check_line_count: File reading`s done");
             return -1;
         }
-        while (*line) {
-            if (*line == '\r' || *line == '\n') {
+        char *temporary_line = line;
+        while (*temporary_line && flag) {
+            if (!isspace(*temporary_line)) {
                 flag = 0;
             }
-            ++line;
+            ++temporary_line;
         }
         ++counter;
-    }
+    } while (isspace(*line) && !flag);
     return counter;
 }
 
@@ -111,55 +102,40 @@ int print_value(char *start, FILE *email) {
     while (isspace(*start)) {
         ++start;
     }
-    const int line_length = check_line_length(start, email);
-    if (line_length == -1) {
+    cut_line_breaker(start);
+    const int line_count = check_line_count(*email);
+    if (line_count == -1) {
         return -1;
     }
-    if (line_length == 1) {
-        cut_line_breaker(start);
+    if (line_count == 1) {
         printf("%s|", start);
         return 1;
     }
     printf("%s ", start);
     FILE *start_point = email;
-    for (int i = 0; i < line_length - 1; ++i) {
-        char next_line[100];
-        if (!fgets(next_line, 100, start_point)) {
+    for (int i = 0; i < line_count - 1; ++i) {
+        char initial_string[100];
+        char *line = fgets(initial_string, 100, start_point);
+        if (!line) {
             if (ferror(start_point)) {
-                perror("*/*print_value ERROR*/*");
+                perror("*/*ERROR*/*");
                 fclose(start_point);
                 return -1;
             }
-            puts("print_value: File reading`s done");
+            puts("email_parser: File reading`s done");
             return -1;
         }
-        if (i != line_length - 2) {
-            printf("%s ", next_line);
+        while (isspace(*line)) {
+            ++line;
+        }
+        cut_line_breaker(line);
+        if (i != line_count - 2) {
+            printf("%s ", line);
         } else {
-            cut_line_breaker(next_line);
-            printf("%s|", next_line);
+            printf("%s|", line);
         }
     }
     return 1;
-}
-
-int check_line_count(FILE *email) {
-    int counter = 0;
-    char next_line[100];
-    FILE *start_point = email;
-    do {
-        if (!fgets(next_line, 100, start_point)) {
-            if (ferror(start_point)) {
-                perror("*/*check_line_count ERROR*/*");
-                fclose(start_point);
-                return -1;
-            }
-            puts("check_line_count: File reading`s done");
-            return -1;
-        }
-        ++counter;
-    } while (isspace(*next_line));
-    return counter;
 }
 
 int is_boudary(char *line) {
@@ -177,19 +153,20 @@ char *is_multipart(char *start, const int line_count, FILE *email) {
         }
     int i = 1;
     while (!boundary && (i < line_count)) {
-        char line[100];
-        if (!fgets(line, 100, start_point)) {
+        char initial_string[100];
+        char *line = fgets(initial_string, 100, start_point);
+        if (!line) {
             if (ferror(start_point)) {
-                perror("*/*is_boudary ERROR*/*");
+                perror("*/*ERROR*/*");
                 fclose(start_point);
-                break;
+                return NULL;
             }
-            puts("is_boudary File reading`s done");
-            break;
+            puts("email_parser: File reading`s done");
+            return NULL;
         }
-        for (; *start; ++start) {
-            if (is_boudary(start)) {
-                boundary = start;
+        for (; *line; ++line) {
+            if (is_boudary(line)) {
+                boundary = line;
             }
         }
         ++i;
@@ -207,6 +184,9 @@ void cut_qoutes_or_line_breaker(char *start) {
             --start;
         }
         ++start;
+    }
+    if (start[-1] == ' ') {
+        start[-1] = '\0';
     }
 }
 
@@ -228,21 +208,17 @@ int compute_part_count(char *boundary, FILE *email) {
             }
             break;
         }
-        if (strcmp(line, boundary) < 0) {
-            continue;
-        }
         char *boundary_start = strstr(line, boundary);
         if (boundary_start && line[0] == '-' && line[1] == '-'\
         && boundary_start[strlen(boundary)] != '-' && boundary_start[strlen(boundary) + 1] != '-') {
             ++part_count;
         }
     }
-    free(boundary);
     return part_count;
 }
 
 int print_part_count(char *start, FILE *email) {
-    const int line_count = check_line_count(email);
+    const int line_count = check_line_count(*email);
     if (line_count == -1) {
         return -1;
     }
@@ -252,6 +228,7 @@ int print_part_count(char *start, FILE *email) {
         return 1;
     }
     int part_count = compute_part_count(boundary, email);
+    free(boundary);
     if (part_count == -1) {
         return -1;
     }
@@ -262,7 +239,10 @@ int print_part_count(char *start, FILE *email) {
 lexem_type check_header_end(char *start) {
     int flag = 1;
     while (*start && flag) {
-        flag = isspace(start);
+        if (!isspace(*start)) {
+                flag = 0;
+        }
+        ++start;
     }
     if (!flag) {
         return LEXEM_SKIP;
@@ -305,8 +285,9 @@ lexem_type get_lexem(const char *initial_string, char *start, char **end, lexem_
                 } 
                 break;
             default:
-                return check_header_end(start);
+                break;
             }
+            return check_header_end(start);
     }
     *end = start + 1;
     return LEXEM_SKIP;    
@@ -321,8 +302,8 @@ int email_parser(const char *path_to_email) {
         return -1;
     }
     while (searching_lexem != LEXEM_END_SEARCHING) {
-        char initial_string[100];
-        char *start = fgets(initial_string, 100, email);
+        char initial_string[3024*1000];
+        char *start = fgets(initial_string, 3024*1000, email);
         if (!start) {
             if (ferror(email)) {
                 perror("*/*ERROR*/*");
@@ -330,7 +311,7 @@ int email_parser(const char *path_to_email) {
                 return -1;
             }
             puts("email_parser: File reading`s done");
-            return -1;
+            break;
         }
         while (*start) {
             char *end[] = {start};
@@ -364,6 +345,11 @@ int email_parser(const char *path_to_email) {
             }
             if (current_lexem == LEXEM_HEADER_END) {
                 fseek(email, 0, SEEK_SET);
+                if (searching_lexem == LEXEM_CONTENT_TYPE_COLON) {
+                    printf("%s", "1");
+                    return 1;
+                }
+                printf("%s", "|");
                 ++searching_lexem;
                 break;
             }
