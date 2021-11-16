@@ -31,7 +31,7 @@ typedef struct {
 
 int email_parser(const char *path_to_email);
 
-char *strndup(const char *s, size_t n);
+char *strdup(const char *s);
 int check_line_count(FILE start_point);
 void cut_line_breaker(char *start);
 int print_value(char *start, FILE *email);
@@ -49,19 +49,15 @@ static rule_type syntax[STATE_COUNT][LEXEM_COUNT] = {
 /*STATE_VALUE*/	    {{STATE_ERROR, NULL},	    {STATE_ERROR, NULL},       {STATE_ERROR, NULL},         {STATE_ERROR, NULL},	           {STATE_HEADER, print_value},      {STATE_ERROR, NULL}},
 };
 
-char *strndup(const char *s, size_t n) {
-    char *p;
-    size_t n1;
-
-    for (n1 = 0; n1 < n && s[n1] != '\0'; n1++)
-        continue;
-    p = malloc(n + 1);
+char *strdup(const char *s) {
+    size_t size = strlen(s) + 1;
+    char *p = malloc(size);
     if (p != NULL) {
-        memcpy(p, s, n1);
-        p[n1] = '\0';
+        memcpy(p, s, size);
     }
     return p;
 }
+
 int check_line_count(FILE start_point) {
     int counter = 0;
     char line[100];
@@ -174,7 +170,7 @@ char *is_multipart(char *start, const int line_count, FILE *email) {
     if (!boundary) {
         return NULL;
     }
-    return strndup(boundary, strlen(boundary));
+    return strdup(boundary);
 }
 
 void cut_qoutes_or_line_breaker(char *start) {
