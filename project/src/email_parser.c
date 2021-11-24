@@ -21,7 +21,7 @@ typedef enum {
     LEXEM_END_SEARCHING,
 } lexem_type;
 
-typedef int (*action_type)(char *start, FILE *email);
+typedef int (*action_type)(char *first_line, FILE *email);
 
 
 typedef struct {
@@ -31,23 +31,37 @@ typedef struct {
 
 int email_parser(const char *path_to_email);
 
+int print_error(const char *function, FILE *email);
 char *strdup(const char *s);
-int check_line_count(FILE start_point);
-void cut_line_breaker(char *start);
-int print_value(char *start, FILE *email);
-int is_boudary(char *line);
-char *is_multipart(char *start, const int line_count, FILE *email);
-void cut_qoutes_or_line_breaker(char *start);
+int check_line_count(FILE email);
+void cut_line_breaker(char *line);
+int print_value(char *first_line, FILE *email);
+int is_boudary_in(char *line);
+char *is_multipart(char *first_line, const int line_count, FILE *email);
+void cut_qoutes_or_line_breaker(char *line);
 int compute_part_count(char *boundary, FILE *email);
-int print_part_count(char *start, FILE *email);
-lexem_type check_header_end(char *start);
-lexem_type get_lexem(const char *initial_string, char *start, char **end, lexem_type *searching_lexem_pointer);
+int print_part_count(char *line, FILE *email);
+lexem_type check_header_end_or_skip(char *line);
+lexem_type get_lexem(const char *initial_string, char *line, char **end, lexem_type *searching_lexem_pointer);
 
 static rule_type syntax[STATE_COUNT][LEXEM_COUNT] = {
 //		            LEXEM_FROM_COLON, 	        LEXEM_TO_COLON,            LEXEM_DATE_COLON,            LEXEM_CONTENT_TYPE_COLON, 	   	   LEXEM_SKIP, 	                     LEXEM_HEADER_END
 /*STATE_HEADER*/	{{STATE_VALUE, NULL},	    {STATE_VALUE, NULL},       {STATE_VALUE, NULL},        	{STATE_VALUE, NULL},           	   {STATE_HEADER, NULL},   	         {STATE_HEADER, NULL}},
 /*STATE_VALUE*/	    {{STATE_ERROR, NULL},	    {STATE_ERROR, NULL},       {STATE_ERROR, NULL},         {STATE_ERROR, NULL},	           {STATE_HEADER, print_value},      {STATE_ERROR, NULL}},
 };
+
+int print_error(const char *function, FILE *email) {
+    if (ferror(email)) {
+        printf("in %s", function);
+        perror("*/*check_line_count ERROR*/*");
+        fclose(email);
+    }
+    if(!strncmp(function, "compute_part_count", sizeof("compute_part_count") - 1) || !strncmp(function, "email_parser", sizeof("email_parser") - 1)) {
+        return 1;
+    }
+    puts("check_line_count: File reading`s done");
+    return -1;
+}
 
 char *strdup(const char *s) {
     size_t size = strlen(s) + 1;
@@ -58,18 +72,13 @@ char *strdup(const char *s) {
     return p;
 }
 
-int check_line_count(FILE start_point) {
+int check_line_count(FILE email) {
     int counter = 0;
     char line[100];
     int flag = 1;
     do {
-        if (!fgets(line, 100, &start_point)) {
-            if (ferror(&start_point)) {
-                perror("*/*check_line_count ERROR*/*");
-                fclose(&start_point);
-                return -1;
-            }
-            puts("check_line_count: File reading`s done");
+        if (!fgets(line, 100, &email)) {
+            print_error("check_line_count", &email);
             return -1;
         }
         char *temporary_line = line;
@@ -84,41 +93,35 @@ int check_line_count(FILE start_point) {
     return counter;
 }
 
-void cut_line_breaker(char *start) {
-    while (*start) {
-        if (*start == '\r' || *start == '\n') {
-            *start = '\0';
-            --start;
+void cut_line_breaker(char *line) {
+    while (*line) {
+        if (*line == '\r' || *line == '\n') {
+            *line = '\0';
+            --line;
         }
-        ++start;
+        ++line;
     }
 }
 
-int print_value(char *start, FILE *email) {
-    while (isspace(*start)) {
-        ++start;
+int print_value(char *first_line, FILE *email) {
+    while (isspace(*first_line)) {
+        ++first_line;
     }
-    cut_line_breaker(start);
+    cut_line_breaker(first_line);
     const int line_count = check_line_count(*email);
     if (line_count == -1) {
         return -1;
     }
     if (line_count == 1) {
-        printf("%s|", start);
+        printf("%s|", first_line);
         return 1;
     }
-    printf("%s ", start);
-    FILE *start_point = email;
+    printf("%s ", first_line);
     for (int i = 0; i < line_count - 1; ++i) {
         char initial_string[100];
-        char *line = fgets(initial_string, 100, start_point);
+        char *line = fgets(initial_string, 100, email);
         if (!line) {
-            if (ferror(start_point)) {
-                perror("*/*ERROR*/*");
-                fclose(start_point);
-                return -1;
-            }
-            puts("email_parser: File reading`s done");
+            print_error("print_value", email);
             return -1;
         }
         while (isspace(*line)) {
@@ -134,34 +137,28 @@ int print_value(char *start, FILE *email) {
     return 1;
 }
 
-int is_boudary(char *line) {
+int is_boudary_in(char *line) {
     return tolower(line[0]) == 'b' && tolower(line[1]) == 'o' && tolower(line[2]) == 'u' && tolower(line[3]) == 'n'\
         && tolower(line[4]) == 'd' && tolower(line[5]) == 'a' && tolower(line[6]) == 'r' && tolower(line[7]) == 'y' && line[8] == '=';
 }
 
-char *is_multipart(char *start, const int line_count, FILE *email) {
-    FILE *start_point = email;
+char *is_multipart(char *first_line, const int line_count, FILE *email) {
     char *boundary = NULL;
-    for (; *start; ++start) {
-            if (is_boudary(start)) {
-                boundary = start;
+    for (; *first_line; ++first_line) {
+            if (is_boudary_in(first_line)) {
+                boundary = first_line;
             }
         }
     int i = 1;
     while (!boundary && (i < line_count)) {
         char initial_string[100];
-        char *line = fgets(initial_string, 100, start_point);
+        char *line = fgets(initial_string, 100, email);
         if (!line) {
-            if (ferror(start_point)) {
-                perror("*/*ERROR*/*");
-                fclose(start_point);
-                return NULL;
-            }
-            puts("email_parser: File reading`s done");
+            print_error("is_multipart", email);
             return NULL;
         }
         for (; *line; ++line) {
-            if (is_boudary(line)) {
+            if (is_boudary_in(line)) {
                 boundary = line;
             }
         }
@@ -173,16 +170,16 @@ char *is_multipart(char *start, const int line_count, FILE *email) {
     return strdup(boundary);
 }
 
-void cut_qoutes_or_line_breaker(char *start) {
-    while (*start) {
-        if (*start == '\"' || *start == '\r' || *start == '\n') {
-            *start = '\0';
-            --start;
+void cut_qoutes_or_line_breaker(char *line) {
+    while (*line) {
+        if (*line == '\"' || *line == '\r' || *line == '\n') {
+            *line = '\0';
+            --line;
         }
-        ++start;
+        ++line;
     }
-    if (start[-1] == ' ') {
-        start[-1] = '\0';
+    if (line[-1] == ' ') {
+        line[-1] = '\0';
     }
 }
 
@@ -192,14 +189,11 @@ int compute_part_count(char *boundary, FILE *email) {
         ++boundary;
     }
     cut_qoutes_or_line_breaker(boundary);
-    FILE *start_point = email;
     int part_count = 0;
     while (1) {
         char line[100];
-        if (!fgets(line, 100, start_point)) {
-            if (ferror(start_point)) {
-                perror("*/*print_value ERROR*/*");
-                fclose(start_point);
+        if (!fgets(line, 100, email)) {
+            if (print_error("compute_part_count", email) == -1) {
                 return -1;
             }
             break;
@@ -213,12 +207,12 @@ int compute_part_count(char *boundary, FILE *email) {
     return part_count;
 }
 
-int print_part_count(char *start, FILE *email) {
+int print_part_count(char *line, FILE *email) {
     const int line_count = check_line_count(*email);
     if (line_count == -1) {
         return -1;
     }
-    char *boundary = is_multipart(start, line_count, email);
+    char *boundary = is_multipart(line, line_count, email);
     if (!boundary) {
         printf("%s", "1");
         return 1;
@@ -232,13 +226,13 @@ int print_part_count(char *start, FILE *email) {
     return 1;
 }
 
-lexem_type check_header_end(char *start) {
+lexem_type check_header_end_or_skip(char *line) {
     int flag = 1;
-    while (*start && flag) {
-        if (!isspace(*start)) {
+    while (*line && flag) {
+        if (!isspace(*line)) {
                 flag = 0;
         }
-        ++start;
+        ++line;
     }
     if (!flag) {
         return LEXEM_SKIP;
@@ -246,46 +240,46 @@ lexem_type check_header_end(char *start) {
     return LEXEM_HEADER_END;
 }
 
-lexem_type get_lexem(const char *initial_string, char *start, char **end, lexem_type *searching_lexem_pointer) {
-    if (start == initial_string) {
+lexem_type get_lexem(const char *initial_string, char *line, char **end, lexem_type *searching_lexem_pointer) {
+    if (line == initial_string) {
         switch (*searching_lexem_pointer) {
             case LEXEM_FROM_COLON:
-                if (tolower(start[0]) == 'f' && tolower(start[1]) == 'r' && tolower(start[2]) == 'o' && tolower(start[3]) == 'm' && start[4] == ':')  {
+                if (tolower(line[0]) == 'f' && tolower(line[1]) == 'r' && tolower(line[2]) == 'o' && tolower(line[3]) == 'm' && line[4] == ':')  {
                     *searching_lexem_pointer = LEXEM_TO_COLON;
-                    *end = start + 4;
+                    *end = line + 4;
                     return LEXEM_FROM_COLON;
                 }
                 break;
             case LEXEM_TO_COLON:
-                if (tolower(start[0]) == 't' && tolower(start[1]) == 'o' && start[2] == ':') {
+                if (tolower(line[0]) == 't' && tolower(line[1]) == 'o' && line[2] == ':') {
                     *searching_lexem_pointer = LEXEM_DATE_COLON;
-                    *end = start + 2;
+                    *end = line + 2;
                     return LEXEM_TO_COLON;
                 }
                 break;
             case LEXEM_DATE_COLON:
-                if (tolower(start[0]) == 'd' && tolower(start[1]) == 'a' && tolower(start[2]) == 't' && tolower(start[3]) == 'e' && start[4] == ':') {
+                if (tolower(line[0]) == 'd' && tolower(line[1]) == 'a' && tolower(line[2]) == 't' && tolower(line[3]) == 'e' && line[4] == ':') {
                     *searching_lexem_pointer = LEXEM_CONTENT_TYPE_COLON;
-                    *end = start + 4;
+                    *end = line + 4;
                     return LEXEM_DATE_COLON;
                 }
                 break;
             case LEXEM_CONTENT_TYPE_COLON:
-                if (tolower(start[0]) == 'c' && tolower(start[1]) == 'o' && tolower(start[2]) == 'n'\
-                && tolower(start[3]) == 't' && tolower(start[4]) == 'e' && tolower(start[5]) == 'n'\
-                && tolower(start[6]) == 't' && start[7] == '-' && tolower(start[8]) == 't'\
-                && tolower(start[9]) == 'y' && start[10] == 'p' && tolower(start[11]) == 'e' && start[12] == ':') {
+                if (tolower(line[0]) == 'c' && tolower(line[1]) == 'o' && tolower(line[2]) == 'n'\
+                && tolower(line[3]) == 't' && tolower(line[4]) == 'e' && tolower(line[5]) == 'n'\
+                && tolower(line[6]) == 't' && line[7] == '-' && tolower(line[8]) == 't'\
+                && tolower(line[9]) == 'y' && line[10] == 'p' && tolower(line[11]) == 'e' && line[12] == ':') {
                     *searching_lexem_pointer = LEXEM_END_SEARCHING;
-                    *end = start + 12;
+                    *end = line + 12;
                     return LEXEM_CONTENT_TYPE_COLON;
                 } 
                 break;
             default:
                 break;
             }
-            return check_header_end(start);
+            return check_header_end_or_skip(line);
     }
-    *end = start + 1;
+    *end = line + 1;
     return LEXEM_SKIP;    
 }
  
@@ -299,34 +293,31 @@ int email_parser(const char *path_to_email) {
     }
     while (searching_lexem != LEXEM_END_SEARCHING) {
         char initial_string[3024*1000];
-        char *start = fgets(initial_string, 3024*1000, email);
-        if (!start) {
-            if (ferror(email)) {
-                perror("*/*ERROR*/*");
-                fclose(email);
+        char *line = fgets(initial_string, 3024*1000, email);
+        if (!line) {
+            if (print_error("email_parser", email) == -1) {
                 return -1;
             }
-            puts("email_parser: File reading`s done");
             break;
         }
-        while (*start) {
-            char *end[] = {start};
-            lexem_type current_lexem = get_lexem(initial_string, start, end, &searching_lexem);
+        while (*line) {
+            char *end[] = {line};
+            lexem_type current_lexem = get_lexem(initial_string, line, end, &searching_lexem);
             rule_type rule = syntax[current_state][current_lexem];
             if (rule.new_state == STATE_ERROR) {
                 fclose(email);
                 return -1;
             }
             if (searching_lexem == LEXEM_END_SEARCHING) {
-                if (print_part_count(start,email) == -1) {
+                if (print_part_count(line,email) == -1) {
                     puts("Can`t print part count");
                 }
                 fclose(email);
                 return 1;
             }
             if (rule.action != NULL) {
-                ++start;
-                if (rule.action(start, email) == -1) {
+                ++line;
+                if (rule.action(line, email) == -1) {
                     puts("Error with action");
                     fclose(email);
                     return -1;
@@ -350,7 +341,7 @@ int email_parser(const char *path_to_email) {
                 break;
             }
             current_state = rule.new_state;
-            start = *end;
+            line = *end;
         }
     }
     return -1;
