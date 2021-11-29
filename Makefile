@@ -3,6 +3,7 @@ VALGRIND_LOG = "valgrind.log"
 
 SRCS = \
 	   project/src/main.c \
+	   project/src/email_parser.c
 
 .PHONY: all check build test memtest rebuild clean
 
