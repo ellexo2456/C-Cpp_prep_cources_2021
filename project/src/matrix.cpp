@@ -2,7 +2,5 @@
 #include "exceptions.h"
 
 namespace prep {
-Matrix::Matrix(size_t rows = 0, size_t cols = 0) {
-    
-}
+Matrix::Matrix(size_t rows, size_t cols): rows(rows), cols(cols), matrix(rows, std::vector<double> (cols, 0)) {}
 }

@@ -6,6 +6,7 @@ OPTION(WITH_MEMCHECK "Run with memcheck" OFF)
 SET(CMAKE_CXX_STANDARD 17)
 SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Werror")
 
+ADD_EXECUTABLE(project/src/matrix.cpp)
 ENABLE_TESTING()
 
 ADD_SUBDIRECTORY(project)
