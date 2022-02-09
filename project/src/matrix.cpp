@@ -25,4 +25,22 @@ namespace prep {
         }
         if (rows * cols != elements_count) {throw prep::InvalidMatrixStream();}
     }
+
+    size_t Matrix::getRows() const{
+        return rows;
+    }
+
+    size_t Matrix::getCols() const{
+        return cols;
+    }
+
+    double Matrix::operator()(size_t i, size_t j) const {
+        if (i * j >= cols * rows) {throw OutOfRange(i, j, *this); }
+        return matrix[i][j];
+    }
+
+    double& Matrix::operator()(size_t i, size_t j) {
+        if (i * j >= cols * rows) {throw OutOfRange(i, j, *this); }
+        return matrix[i][j];
+    }
 }
