@@ -191,5 +191,7 @@ namespace prep {
         return adjugated;
     }
 
-    
+    Matrix Matrix::inv() const {
+        return adj() * (1/det());
+    }
 }
