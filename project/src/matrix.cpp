@@ -74,24 +74,24 @@ namespace prep {
 
     Matrix Matrix::operator+(const Matrix& rhs) const {
         if (rows != rhs.rows || cols != rhs.cols) { throw DimensionMismatch(*this, rhs); }
-        Matrix sum_matrix(rows, cols);
+        Matrix sum(rows, cols);
         for (size_t i = 0; i < rows ; ++i) {
             for (size_t j = 0; j < cols; ++j) {
-                sum_matrix.matrix[i][j] = matrix[i][j] + rhs.matrix[i][j];
+                sum.matrix[i][j] = matrix[i][j] + rhs.matrix[i][j];
             }
         }
-        return sum_matrix;
+        return sum;
     }
 
     Matrix Matrix::operator-(const Matrix& rhs) const {
         if (rows != rhs.rows || cols != rhs.cols) { throw DimensionMismatch(*this, rhs); }
-        Matrix sum_matrix(rows, cols);
+        Matrix sum(rows, cols);
         for (size_t i = 0; i < rows ; ++i) {
             for (size_t j = 0; j < cols; ++j) {
-                sum_matrix.matrix[i][j] = matrix[i][j] - rhs.matrix[i][j];
+                sum.matrix[i][j] = matrix[i][j] - rhs.matrix[i][j];
             }
         }
-        return sum_matrix;
+        return sum;
     }
 
     Matrix Matrix::operator*(const Matrix &rhs) const {
@@ -133,5 +133,63 @@ namespace prep {
         return matrix*val;
     }
 
+    double Matrix::det() const {
+            if (cols != rows) {throw DimensionMismatch(*this);}
+            double determinant = 0;
+            if (rows == 2) {
+                return matrix[0][0] * matrix[1][1] - matrix[1][0] * matrix[0][1];
+            }
+            if (rows == 1) {
+                return matrix[0][0];
+            }
+        for (size_t j = 0; j < cols; ++j) {
+            Matrix minor(rows - 1, cols - 1);
+            for (size_t k = 1; k < rows; ++k) {
+                size_t m = 0;
+                for (size_t l = 0; l < cols; ++l) {
+                    if (l == j)
+                        continue;
+                    minor.matrix[k-1][m++] = matrix[k][l];
+                }
+            }
+            if (j % 2 == 0) {
+                determinant += matrix[0][j] * minor.det();
+            } else {
+                determinant += -matrix[0][j] * minor.det();
+            }
+        }
+        return determinant;
+    }
 
+    Matrix Matrix::adj() const {
+        if (cols != rows) {throw DimensionMismatch(*this);}
+        Matrix adjugated(rows, cols);
+        if (rows == 1) {
+            adjugated.matrix[0][0] = 1;
+            return adjugated;
+        }
+        Matrix transposed = transp();
+        for (size_t i = 0; i < adjugated.rows; ++i) {
+            for (size_t j = 0; j < adjugated.cols; ++j) {
+                Matrix minor(transposed.rows - 1,transposed.cols - 1);
+                size_t m = 0;
+                for (size_t k = 0; k < transposed.rows; ++k) {
+                    size_t n = 0;
+                    for (size_t l = 0; l < transposed.cols; ++l) {
+                        if (k == i || l == j) {
+                            continue;
+                        }
+                        minor.matrix[m][n++] = transposed.matrix[k][l];
+                    }
+                    if (k != i) {
+                        ++m;
+                    }
+                }
+                adjugated.matrix[i][j] = pow(-1, i + j)*minor.det();
+            }
+        }
+        return adjugated;
+    }
+
+    
 }
