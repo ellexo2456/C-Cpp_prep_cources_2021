@@ -1,6 +1,5 @@
 #include <cmath>
 #include <iomanip>
-#include <limits>
 
 #include "matrix.h"
 #include "exceptions.h"
@@ -11,20 +10,23 @@ namespace prep {
     Matrix::Matrix(std::istream &is) {
         is >> rows >> cols;
         if (is.eof()) { throw InvalidMatrixStream(); }
+        matrix = std::vector<std::vector<double>> (rows, std::vector<double>(cols, 0));
         size_t elements_count = 0;
         size_t row = 0;
         size_t col = 0;
         double number;
-        while (is >> number) {
+        while (is.good()) {
+            is >> number;
             if (col == cols) {
                 col = 0;
                 ++row;
+                if (row >= rows) { throw InvalidMatrixStream(); }
             }
-            matrix[row].emplace_back(number);
+            matrix[row][col] = number;
             ++col;
             ++elements_count;
         }
-        if (is.fail() || (rows * cols != elements_count)) { throw InvalidMatrixStream(); }
+        if (!is || (rows * cols != elements_count)) { throw InvalidMatrixStream(); }
     }
 
     size_t Matrix::getRows() const {
