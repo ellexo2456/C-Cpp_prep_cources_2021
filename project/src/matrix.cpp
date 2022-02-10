@@ -43,4 +43,13 @@ namespace prep {
         if (i * j >= cols * rows) {throw OutOfRange(i, j, *this); }
         return matrix[i][j];
     }
+
+    std::ostream& operator<<(std::ostream& os, const Matrix& matrix) {
+        os << std::setprecision(std::numeric_limits<double>::max_digits10) << matrix.rows << matrix.cols;
+        for (row : matrix.matrix) {
+            for (col : row) {
+
+            }
+        }
+    }
 }
