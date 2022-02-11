@@ -1,5 +1,6 @@
 #include <cmath>
 #include <iomanip>
+#include <limits>
 
 #include "matrix.h"
 #include "exceptions.h"
