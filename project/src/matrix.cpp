@@ -1,5 +1,6 @@
 #include <cmath>
 #include <iomanip>
+#include <iostream>
 #include <limits>
 
 #include "matrix.h"
@@ -11,13 +12,14 @@ namespace prep {
     Matrix::Matrix(std::istream &is) {
         is >> rows >> cols;
         if (is.eof()) { throw InvalidMatrixStream(); }
-        matrix = std::vector<std::vector<double>> (rows, std::vector<double>(cols, 0));
+        try {matrix = std::vector<std::vector<double>> (rows, std::vector<double>(cols));}
+        catch (std::bad_alloc&) {std::cout << "############################" << rows << "############################" << std::endl
+        << "############################" << cols << "############################" << std::endl ;throw InvalidMatrixStream();}
         size_t elements_count = 0;
         size_t row = 0;
         size_t col = 0;
         double number;
-        while (is.good()) {
-            is >> number;
+        while (is >> number ) {
             if (col == cols) {
                 col = 0;
                 ++row;
@@ -26,8 +28,9 @@ namespace prep {
             matrix[row][col] = number;
             ++col;
             ++elements_count;
+            if (is.eof()) { break; }
         }
-        if (!is || (rows * cols != elements_count)) { throw InvalidMatrixStream(); }
+        if (is.bad() || (is.fail() && !is.eof()) || (rows * cols != elements_count)) { throw InvalidMatrixStream(); }
     }
 
     size_t Matrix::getRows() const {
@@ -72,7 +75,6 @@ namespace prep {
                 os << col;
             }
         }
-        if (os.good()) { throw InvalidMatrixStream(); }
         return os;
     }
 
