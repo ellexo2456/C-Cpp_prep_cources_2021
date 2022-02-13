@@ -10,8 +10,10 @@ namespace prep {
     Matrix::Matrix(size_t rows, size_t cols) : rows(rows), cols(cols), matrix(rows, std::vector<double>(cols, 0)) {}
 
     Matrix::Matrix(std::istream &is) {
+//        std::cout << is.rdbuf()->in_avail() << std::endl;
         is >> rows >> cols;
         if (!is) { throw InvalidMatrixStream(); }
+//        std::cout << rows << ' ' << cols << ' ' << is.fail() << std::endl;
         matrix = std::vector<std::vector<double>>(rows, std::vector<double>(cols, 0));
         for (size_t i = 0; i < rows; ++i) {
             for (size_t j = 0; j < cols; ++j) {
@@ -59,10 +61,10 @@ namespace prep {
     }
 
     std::ostream &operator<<(std::ostream &os, const Matrix &matrix) {
-        os << std::setprecision(std::numeric_limits<double>::max_digits10) << matrix.rows << matrix.cols;
+        os << std::setprecision(std::numeric_limits<double>::max_digits10) << matrix.rows << ' ' << matrix.cols << std::endl;
         for (auto row: matrix.matrix) {
-            for (auto data: row) {
-                os << data;
+            for (auto col: row) {
+                os << col << ' ';
             }
             os << std::endl;
         }
@@ -108,8 +110,8 @@ namespace prep {
 
     Matrix Matrix::transp() const {
         Matrix transposed(cols, rows);
-        for (size_t i = 0; i < rows; ++i) {
-            for (size_t j = 0; j < cols; ++j) {
+        for (size_t i = 0; i < transposed.rows; ++i) {
+            for (size_t j = 0; j < transposed.cols; ++j) {
                 transposed.matrix[i][j] = matrix[j][i];
             }
         }
