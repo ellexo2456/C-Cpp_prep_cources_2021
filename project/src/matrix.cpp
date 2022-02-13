@@ -11,26 +11,16 @@ namespace prep {
 
     Matrix::Matrix(std::istream &is) {
         is >> rows >> cols;
-        if (is.eof()) { throw InvalidMatrixStream(); }
-        try {matrix = std::vector<std::vector<double>> (rows, std::vector<double>(cols));}
-        catch (std::bad_alloc&) {std::cout << "############################" << rows << "############################" << std::endl
-        << "############################" << cols << "############################" << std::endl ;throw InvalidMatrixStream();}
-        size_t elements_count = 0;
-        size_t row = 0;
-        size_t col = 0;
-        double number;
-        while (is >> number ) {
-            if (col == cols) {
-                col = 0;
-                ++row;
-                if (row >= rows) { throw InvalidMatrixStream(); }
+        if (!is) { throw InvalidMatrixStream(); }
+        matrix = std::vector<std::vector<double>>(rows, std::vector<double>(cols, 0));
+        for (size_t i = 0; i < rows; ++i) {
+            for (size_t j = 0; j < cols; ++j) {
+                is >> matrix[i][j];
+                if (!is) {
+                    throw InvalidMatrixStream();
+                }
             }
-            matrix[row][col] = number;
-            ++col;
-            ++elements_count;
-            if (is.eof()) { break; }
         }
-        if (is.bad() || (is.fail() && !is.eof()) || (rows * cols != elements_count)) { throw InvalidMatrixStream(); }
     }
 
     size_t Matrix::getRows() const {
@@ -71,9 +61,10 @@ namespace prep {
     std::ostream &operator<<(std::ostream &os, const Matrix &matrix) {
         os << std::setprecision(std::numeric_limits<double>::max_digits10) << matrix.rows << matrix.cols;
         for (auto row: matrix.matrix) {
-            for (auto col: row) {
-                os << col;
+            for (auto data: row) {
+                os << data;
             }
+            os << std::endl;
         }
         return os;
     }
