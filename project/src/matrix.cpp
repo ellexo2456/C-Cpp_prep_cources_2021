@@ -7,7 +7,8 @@
 #include "exceptions.h"
 
 namespace prep {
-    Matrix::Matrix(size_t rows, size_t cols) : rows(rows), cols(cols), matrix(rows, std::vector<double>(cols, 0)) {}
+    Matrix::Matrix(size_t rows, size_t cols) : rows(rows), cols(cols), 
+    matrix(rows, std::vector<double>(cols, 0)) {}
 
     Matrix::Matrix(std::istream &is) {
 //        std::cout << is.rdbuf()->in_avail() << std::endl;
@@ -61,9 +62,10 @@ namespace prep {
     }
 
     std::ostream &operator<<(std::ostream &os, const Matrix &matrix) {
-        os << std::setprecision(std::numeric_limits<double>::max_digits10) << matrix.rows << ' ' << matrix.cols << std::endl;
-        for (auto row: matrix.matrix) {
-            for (auto col: row) {
+        os << std::setprecision(std::numeric_limits<double>::max_digits10)
+         << matrix.rows << ' ' << matrix.cols << std::endl;
+        for (auto row : matrix.matrix) {
+            for (auto col : row) {
                 os << col << ' ';
             }
             os << std::endl;

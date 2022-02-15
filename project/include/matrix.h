@@ -3,7 +3,8 @@
 #include <vector>
 #include <istream>
 
-namespace prep {
+namespace prep 
+{
     class Matrix {
     private:
         size_t rows = 0;
