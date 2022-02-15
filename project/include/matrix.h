@@ -9,6 +9,7 @@ class Matrix {
     size_t rows = 0;
     size_t cols = 0;
     std::vector<std::vector<double>> matrix;
+    
  public:
     explicit Matrix(size_t rows = 0, size_t cols = 0);
     explicit Matrix(std::istream& is);

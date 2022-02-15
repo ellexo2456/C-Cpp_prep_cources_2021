@@ -7,7 +7,7 @@
 #include "exceptions.h"
 
 namespace prep {
-    Matrix::Matrix(size_t rows, size_t cols) : rows(rows), cols(cols), 
+    Matrix::Matrix(size_t rows, size_t cols) : rows(rows), cols(cols),
     matrix(rows, std::vector<double>(cols, 0)) {}
 
     Matrix::Matrix(std::istream &is) {
@@ -197,4 +197,4 @@ namespace prep {
         if (determinant == 0) { throw SingularMatrix(); }
         return adj() * (1 / determinant);
     }
-}
+}  // namespace prep
